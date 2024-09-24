@@ -38,11 +38,11 @@ function FormPlus() {
         <label htmlFor="exampleInputPassword2" className={styles.sr_only}>Confirm Password</label>
         <input type="password" onChange={(e) => setConfirmPassword(e.target.value)} value={ConfirmPassword} className={`form-control ${styles.input_outline}`} id="exampleInputPassword2" placeholder="Confirm Password" required />
       </div>
-      <button type="submit" className="btn btn-outline-secondary col-12 my-3" style={{ fontSize: "24" }}>Login</button>
-      <div className="d-flex mt-2 justify-content-between col-12" style={{ fontSize: "small" }}>
+      <button type="submit" className="btn btn-outline-secondary col-12 my-3" style={{ fontSize: "24" }}>Sign up</button>
+      <div className="d-flex mt-2 " style={{ fontSize: "small" }}>
         <small>
           Have an account ?
-          <small className="ms-2" onClick={() => navigate("/")} style={{ cursor: "pointer", color: "#6FB1B6" }} >Sign up</small>
+          <small className="ms-2" onClick={() => navigate("/")} style={{ cursor: "pointer", color: "#6FB1B6" }} >Login</small>
         </small>
       </div>
 

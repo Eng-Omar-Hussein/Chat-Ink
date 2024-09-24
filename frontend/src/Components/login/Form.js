@@ -30,12 +30,12 @@ function Form() {
       </div>
 
       <button type="submit" className="btn btn-outline-secondary col-12 my-3" style={{ fontSize: "24" }}>Login</button>
-      <div className="d-flex mt-2 justify-content-between col-12" style={{ fontSize: "small" }}>
+      <div className="d-flex mt-2 flex-column align-items-center col-12" style={{ fontSize: "small" }}>
         <small>
           Don't have an account?
           <small className="ms-2" onClick={() => navigate("/signUp")} style={{ cursor: "pointer", color: "#6FB1B6" }} >Sign Up!</small>
         </small>
-        <small className="ms-2" onClick={() => console.log("send password to your email")} style={{ cursor: "pointer", color: "#6FB1B6" }} >forget?</small>
+        <small className="ms-2" onClick={() => console.log("send password to your email")} style={{ cursor: "pointer", color: "#6FB1B6" }} >Forget Password ?</small>
       </div>
 
 
