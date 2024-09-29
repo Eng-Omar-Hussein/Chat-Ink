@@ -13,7 +13,7 @@ function FormPlus() {
     event.preventDefault()
     if (password !== ConfirmPassword) window.alert("Wrong Confirm Password")
     const emailSplit = email.split('@');
-    if (emailSplit[emailSplit.length - 1] !== "@gmail.com") window.alert("email must be [name@gmail.com]")
+    if (emailSplit[emailSplit.length - 1] !== "gmail.com") window.alert("email must be [name@gmail.com]")
   }
   return (
     <form onSubmit={handleSignUp} className="d-flex flex-column align-items-center col-10 col-sm-7 col-md-6 col-lg-5 col-xl-4 col-xxl-3">
