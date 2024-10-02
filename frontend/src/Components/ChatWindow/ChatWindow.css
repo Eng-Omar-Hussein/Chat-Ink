@@ -1,0 +1,113 @@
+.chat-content {
+    flex-grow: 1;
+    display:flex;
+    flex-direction: column;
+    max-height: 700px;
+    
+  }
+.chat-content h2 {
+    padding: 10px;
+    font-size: 18px;
+  }
+  .chat-header-info {
+    display: flex;
+    align-items: center;
+  }
+  .chat-header-info img {
+    margin-right: 10px;
+    border-radius: 50%;
+    margin-left: 15px;
+  }
+  .back-arrow {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+    cursor: pointer;
+  }
+  #chat-box {
+    height: 70vh; 
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    padding: 10px;
+    margin: 10px;
+    overflow-y: auto; /* Ensure messages are scrollable */
+    max-width: 100%; /* Ensure it takes the available width */
+    box-sizing: border-box;
+    background-color: #f1f1f15d;
+   
+  
+  }
+   
+  
+
+  .sent {
+    background-color: #3281955d;
+    margin-left: auto;
+    margin-right: 0px;
+    margin-bottom: 5px;
+   max-width:fit-content;
+    padding: 10px;
+    border-radius: 15px;
+      font-family: 'Times New Roman', Times, serif;
+
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  }
+  .received {
+    background-color: #e2f2f7fc;
+    margin-left: 0;
+    margin-right: auto;
+    max-width: fit-content;
+    padding: 10px;
+    border-radius: 10px;
+    font-family: 'Times New Roman', Times, serif;
+    height: 55px;
+    margin-bottom: 5px;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  }
+  .received span{
+    display: flex;
+justify-content: left;
+margin-top: -15px;
+  }
+  .sent span{
+    display: flex;
+    justify-content: right;
+    margin-top: -15px;
+  }
+  
+  .message-time {
+    font-size: 0.8em;
+ margin-left: 5px;
+margin-top: 10px;
+
+}
+  
+
+.warning-message {
+  color:black; /* Warning color */
+  font-weight: bold;
+  margin: 5px 0;
+  overflow-wrap: break-word;
+}
+.Warning{
+  background-color: rgba(255, 0, 0, 0.586);
+width: 150px;
+margin-top: 10px;
+}
+
+  
+  
+
+
+
+  @media screen and (max-width: 900px) {
+.chat-content{
+    max-height: 800px;
+}
+    
+   
+  }
+
+  
