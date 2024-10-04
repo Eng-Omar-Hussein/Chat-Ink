@@ -1,0 +1,15 @@
+.inputSearch {
+  border-radius: 30px;
+  padding: 10px;
+  border: 2px solid #000;
+  width: 100%;
+}
+.container {
+  position: relative;
+}
+.iconSearch {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 0;
+}
