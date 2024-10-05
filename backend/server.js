@@ -1,20 +1,15 @@
-const http = require('http');
-const bodyParser = require('body-parser');
-const { Server } = require('socket.io');
-const jsonParser = bodyParser.json();
+const express = require('express');
+const connectDB = require('./config/db');
+const chatRoutes = require('./routes/chatRoutes');
+const messageRoutes = require('./routes/messageRoutes');
 
-const app = http.createServer(async(req,res)=>{
-    res.setHeader('Content-Type', 'application/json');
-    if(req.method==="POST" && req.url === "/api"){
-        jsonParser(req,res,async()=>{
-            console.log(req.body); 
-        })
-        res.statusCode=201;
-    }
-    res.end('Hello world in Node.js Server!');
-});
+connectDB();
 
+const app = express();
+app.use(express.json());
 
-app.listen(4000, '127.0.0.1', ()=>{
-    console.log("Server listening on port 4000");
-})
+app.use('/api/chats', chatRoutes);
+app.use('/api/messages', messageRoutes);
+
+const PORT =  5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
