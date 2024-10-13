@@ -2,27 +2,48 @@
 const mongoose = require('mongoose');
 
 const notificationSchema = new mongoose.Schema({
-    type: { 
+  type: { 
     type: String, 
-    required: [true , "Type is required"] }, // 'friend_request', 'message'
+    required: [true, "Type is required"] // 'friend_request', 'message'
+  },
   
-    content: { 
-    type: String, 
-    required: [true , "Content is required"] },
+  userId: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    // ref: 'User', 
+    required: [true, "UserId is required"] 
+  },
 
-  link: { 
-    type: String }, // URL or ID to take the user to the relevant page
+  sender: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    // ref: 'User', 
+    required: [true, "Sender is required"] 
+  },
   
-    createdAt: { 
+  message: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    // ref: 'Message', 
+    // required: [true, "Message ID is required"] 
+  },
+
+  room: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    // ref: 'Room', // Could be a chat or group room
+    // required: [true, "Room ID is required"]
+  },
+
+  createdAt: { 
     type: Date, 
-    default: Date.now },
+    default: Date.now 
+  },
 
   readAt: { 
-    type: Date },
+    type: Date 
+  },
 
   read: { 
     type: Boolean, 
-    default: false },
+    default: false 
+  }
 });
 
 module.exports = mongoose.model('Notification', notificationSchema);
