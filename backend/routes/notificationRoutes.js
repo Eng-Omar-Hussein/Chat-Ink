@@ -8,6 +8,7 @@ router.post('/', notificationController.createNotification);
 router.get('/:id', notificationController.getUserNotificationById );
 router.patch('/:id/read', notificationController.markAsRead);
 router.delete('/:id', notificationController.deleteNotification);
-router.get('/messages/:userId', notificationController.getMessagesByUserId);
+router.post('/messages', notificationController.getMessagesByUserId); 
+
 
 module.exports = router;
