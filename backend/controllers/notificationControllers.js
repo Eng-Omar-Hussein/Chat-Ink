@@ -43,14 +43,15 @@ exports.getUserNotificationById = async (req, res) => {
 
 
 
-// Get messages for a specific user by userId
+
+// Get messages for a specific user by userId (from request body)
 exports.getMessagesByUserId = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const { userId } = req.body; // Get userId from the request body
 
     // Find all notifications where userId matches and type is 'message'
     const notifications = await Notification.find({ userId: userId, type: 'message' })
-      .populate('sender', 'name')
+      .populate('sender', 'name') 
       .populate('message', 'content') 
       .populate('room', 'name'); 
 
