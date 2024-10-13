@@ -21,7 +21,7 @@ exports.createNotification = async (req, res) => {
   }
 };
 
-// Get notifications for a specific user
+// Get notification by id
 exports.getUserNotificationById = async (req, res) => {
   try {
     const notID = req.params.id;
@@ -40,6 +40,31 @@ exports.getUserNotificationById = async (req, res) => {
     res.status(500).json({ error: 'Failed to get notification', message: err.message });
   }
 };
+
+
+
+// Get messages for a specific user by userId
+exports.getMessagesByUserId = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // Find all notifications where userId matches and type is 'message'
+    const notifications = await Notification.find({ userId: userId, type: 'message' })
+      .populate('sender', 'name')
+      .populate('message', 'content') 
+      .populate('room', 'name'); 
+
+    if (!notifications || notifications.length === 0) {
+      return res.status(404).json({ error: 'No messages found for this user' });
+    }
+
+    res.status(200).json(notifications);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to get messages', message: err.message });
+  }
+};
+
+
 
 // Mark notification as read
 exports.markAsRead = async (req, res) => {
