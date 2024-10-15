@@ -97,3 +97,35 @@ exports.deleteNotification = async (req, res) => {
     res.status(500).json({ error: 'Failed to delete notification', message: err.message });
   }
 };
+
+// Delete a notification
+exports.deleteNotificationn = async (notificationId) => {
+  try {
+    const noti = await Notification.findByIdAndDelete(notificationId);
+
+    if (!noti) {
+      console.log('Notification not found');
+    }
+  } catch (err) {
+  
+    console.log('Failed to delete notification');
+  }
+};
+
+
+exports.createNotificationn = async (userId, type, sender , message , room ) => {
+  try {
+    const notification = new Notification({
+      userId,
+      type,
+      sender,
+      message,
+      room
+    });
+    await notification.save();
+    console.log("done");
+  } catch (err) {
+    console.log("Failed to create notification");
+  }
+};
+
