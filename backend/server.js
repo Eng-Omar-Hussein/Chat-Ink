@@ -15,10 +15,10 @@ connectDB();
 
 app.use(express.json());
 
-app.use("/api/group", groupRoutes);
-app.use("/api/chats", chatRoutes);
-app.use("/api/messages", messageRoutes);
-app.use("/api/notifications", notificationRoutes);
+app.use("/api/group", authMiddleware, groupRoutes);
+app.use("/api/chats", authMiddleware, chatRoutes);
+app.use("/api/messages", authMiddleware, messageRoutes);
+app.use("/api/notifications", authMiddleware, notificationRoutes);
 app.use("/api/user", userRoutes);
 
 app.listen(5000, () => {

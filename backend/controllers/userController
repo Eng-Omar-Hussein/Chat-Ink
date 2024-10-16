@@ -1,295 +1,249 @@
 //import { findById } from '../models/NotificationModel'
 
-const user = require('../models/userModel')
-const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
-const notificationControllers = require('../controllers/notificationControllers')
-const Notification = require('../models/NotificationModel')
-const Chat = require('../models/chat')
-const chat =require('../controllers/chatController')
-const mongoose= require('mongoose')
-var loggedInUser
+const user = require("../models/userModel");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const notificationControllers = require("../controllers/notificationControllers");
+const Notification = require("../models/NotificationModel");
+const Chat = require("../models/chat");
+const chat = require("../controllers/chatController");
+var loggedInUser;
 
-exports.login = async(req,res) =>{
-  try 
-   {
-        const {email , password} = req.body
-        const userExists = await user.findOne({email})
+exports.login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const userExists = await user.findOne({ email });
 
-        if(userExists)
-        {
-             
-            if(await bcrypt.compare(password,userExists.password))
-            {
-                const token = jwt.sign({id :userExists.email}, 'secretKey',{expiresIn:'1h'})
-                loggedInUser = userExists;
-                loggedInUser.status="Online";
-                await userExists.save();
-                return res.status(200).json({message : "You have logged in successfuly", token})
-            }
-
-
-            else 
-            {
-                return res.status(404).json({message:"Invalid email or password"})
-            }
-
-
-        }
-
-    else 
-        return res.status(404).json({message:"Invalid email or password"})
-
-    } 
-        catch (error) {
-            return res.status(400).json({error : "Bad request "});
-
-    }
-    
-}
-
-
-exports.signUp = async (req,res) => {
-    try 
-    {
-        const { firstName, lastName, email, password } = req.body;
-        const userExists = await user.findOne({ email });
-
-        if (!userExists) 
-            { 
-                const saltRounds= 10;
-                const hashedPassword= await bcrypt.hash(password,saltRounds)
-
-                const newUser = new user({ firstName, lastName, email, password : hashedPassword , status : "Online" , profilePic: "https://th.bing.com/th?id=OIF.Z4I1kvCrYBKVhUxjBYK%2b%2fQ&rs=1&pid=ImgDetMain"});
-                await newUser.save(); 
-                return res.status(201).json(newUser); 
-
-            } 
-            
-            else {
-                return res.status(400).json({message:"User already exists"});
-            }
-
-    } 
-    
-    catch (error) 
-    {
-        return res.status(400).json({message : "Bad request " });
-    }
-    
-};
-
-exports.updateUserInfo = async (req , res) => {
-    try {
-
-        const { firstName, lastName, email, password , profilePic } = req.body;
-        const userExists = await user.findOne({ email });
-
-        userExists.firstName = firstName; 
-        userExists.lastName = lastName;
-        userExists.email = email;
-      
-        const saltRounds= 10;
-        const hashedPassword= await bcrypt.hash(password,saltRounds)
-        userExists.password = hashedPassword;
-        
-        user.exists.profilePic=profilePic;
-
+    if (userExists) {
+      if (await bcrypt.compare(password, userExists.password)) {
+        const token = jwt.sign({ id: userExists.email }, "secretKey", {
+          expiresIn: "1h",
+        });
+        loggedInUser = userExists;
+        loggedInUser.status = "Online";
         await userExists.save();
-        return res.status(200).json({message:"User info successfully updates " , user:userExists}); 
-
-
-    } 
-    
-    catch (error) {
-        return res.status(400).json({message : "Bad request , couldn't save the update"});
-
-    }
+        return res
+          .status(200)
+          .json({ message: "You have logged in successfuly", token });
+      } else {
+        return res.status(404).json({ message: "Invalid email or password" });
+      }
+    } else
+      return res.status(404).json({ message: "Invalid email or password" });
+  } catch (error) {
+    return res.status(400).json({ error: "Bad request " });
+  }
 };
 
+exports.signUp = async (req, res) => {
+  try {
+    const { firstName, lastName, email, password } = req.body;
+    const userExists = await user.findOne({ email });
 
-exports.sendFriendRequest = async(req, res) => {
-    try {
-        const { email } = req.body;
-        const addedUser = await user.findOne({email});
-        console.log(addedUser); 
-        
-        //checks if the added person is already in the friends list
-        for(let i = 0 ; i<loggedInUser.friends.length ; i++)
-            {
-                if(loggedInUser.friends[i]._id.equals(addedUser._id))
-                    return res.status(400).json({message : "Can't send request as you're friends"})
-            }
+    if (!userExists) {
+      const saltRounds = 10;
+      const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-        if (addedUser) {
-                    // Search for an existing friend request notification from the sender to the receiver
-                    const existingNotification = await Notification.findOne({
-                      userId: addedUser._id, 
-                      sender: loggedInUser._id,   
-                      type: 'friend_request', 
-                    });
-                
-                     //Check if such a notification already exists
-                    if (existingNotification) {
-                      return res.status(400).json({message : "Bad request , Friend request already sent"})
-                    }
-
-                    else 
-                    {
-                        const newNotification = await notificationControllers.createNotificationn(
-                            addedUser._id,
-                            "friend_request",
-                            loggedInUser._id,
-                            null,
-                            null
-                          );  
-                          
-                         
-                            await loggedInUser.save();
-                            await addedUser.save();
-                            return res.status(200).json({ message: "Friend request has been sent successfully!" });
-    
-                          
-                        
-                    }
-        } 
-        
-        else {
-            return res.status(404).json({ message: "User not found" });
-        }
-
-    } 
-    
-    catch (error) 
-    {
-        return res.status(400).json({ message: "Bad request", error: error.message });
+      const newUser = new user({
+        firstName,
+        lastName,
+        email,
+        password: hashedPassword,
+        status: "Online",
+        profilePic:
+          "https://th.bing.com/th?id=OIF.Z4I1kvCrYBKVhUxjBYK%2b%2fQ&rs=1&pid=ImgDetMain",
+      });
+      await newUser.save();
+      return res.status(201).json(newUser);
+    } else {
+      return res.status(400).json({ message: "User already exists" });
     }
-}
+  } catch (error) {
+    return res.status(400).json({ message: "Bad request " });
+  }
+};
 
+exports.updateUserInfo = async (req, res) => {
+  try {
+    const { firstName, lastName, email, password, profilePic } = req.body;
+    const userExists = await user.findOne({ email });
+    console.log(
+      "----------------------------------------------------------------"
+    );
+    console.log(email);
+    userExists.firstName = firstName;
+    userExists.lastName = lastName;
+    userExists.email = email;
 
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    userExists.password = hashedPassword;
+
+    user.exists.profilePic = profilePic;
+
+    await userExists.save();
+    return res
+      .status(200)
+      .json({ message: "User info successfully updates ", user: userExists });
+  } catch (error) {
+    return res
+      .status(400)
+      .json({ message: "Bad request , couldn't save the update" });
+  }
+};
+
+exports.sendFriendRequest = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const addedUser = await user.findOne({ email });
+    console.log(addedUser);
+
+    //checks if the added person is already in the friends list
+    for (let i = 0; i < loggedInUser.friends.length; i++) {
+      if (loggedInUser.friends[i]._id.equals(addedUser._id))
+        return res
+          .status(400)
+          .json({ message: "Can't send request as you're friends" });
+    }
+
+    if (addedUser) {
+      // Search for an existing friend request notification from the sender to the receiver
+      const existingNotification = await Notification.findOne({
+        userId: addedUser._id,
+        sender: loggedInUser._id,
+        type: "friend_request",
+      });
+
+      //Check if such a notification already exists
+      if (existingNotification) {
+        return res
+          .status(400)
+          .json({ message: "Bad request , Friend request already sent" });
+      } else {
+        const newNotification =
+          await notificationControllers.createNotificationn(
+            addedUser._id,
+            "friend_request",
+            loggedInUser._id,
+            null,
+            null
+          );
+
+        await loggedInUser.save();
+        await addedUser.save();
+        return res
+          .status(200)
+          .json({ message: "Friend request has been sent successfully!" });
+      }
+    } else {
+      return res.status(404).json({ message: "User not found" });
+    }
+  } catch (error) {
+    return res
+      .status(400)
+      .json({ message: "Bad request", error: error.message });
+  }
+};
 
 exports.acceptFriendRequest = async (req, res) => {
-    try {
+  try {
+    const { email } = req.body;
+    const addedUser = await user.findOne({ email });
 
-        const { email } = req.body;
-        const addedUser = await user.findOne({ email });
-
-        if (!addedUser) {
-            return res.status(404).json({ message: "User not found" });
-        }
-
-            const existingNotification = await Notification.findOne({
-                userId: loggedInUser._id, 
-                sender: addedUser._id,   
-                type: 'friend_request',
-              });
-          
-             //Check if such a notification already exists
-              if (existingNotification) {
-                loggedInUser.friends.push(addedUser._id);
-                addedUser.friends.push(loggedInUser._id);
-                await loggedInUser.save();
-                await addedUser.save();
-                await notificationControllers.deleteNotificationn(existingNotification._id)
-                return res.status(200).json({ message: "Friend request accepted" });
-              }
-
-              else
-              {
-                return res.status(400).json({ message: "No friend request found" });
-              }
-
-        }
-
-            catch (error) 
-            {
-                console.error(error);
-                return res.status(400).json({ message: "Bad request", error: error.message });
-            }
-}
-
-
-exports.rejectFriendRequest = async (req , res) => {
-    try {
-        
-        const { email } = req.body;
-        const addedUser = await user.findOne({ email });
-        if (!addedUser) 
-        {
-            return res.status(404).json({ message: "User not found" });
-        }
-
-        const existingNotification = await Notification.findOne({
-            userId: loggedInUser._id, 
-            sender: addedUser._id,   
-            type: 'friend_request',
-          });
-            
-          await notificationControllers.deleteNotificationn(existingNotification._id)
-          return res.status(200).json({message : "You've rejected the friend request"})
-
-
-    } 
-
-    catch (error) {
-        return res.status(400).json({message :"Bad request" , error : error.message})
+    if (!addedUser) {
+      return res.status(404).json({ message: "User not found" });
     }
+
+    const existingNotification = await Notification.findOne({
+      userId: loggedInUser._id,
+      sender: addedUser._id,
+      type: "friend_request",
+    });
+
+    //Check if such a notification already exists
+    if (existingNotification) {
+      loggedInUser.friends.push(addedUser._id);
+      addedUser.friends.push(loggedInUser._id);
+      await loggedInUser.save();
+      await addedUser.save();
+      await notificationControllers.deleteNotificationn(
+        existingNotification._id
+      );
+      return res.status(200).json({ message: "Friend request accepted" });
+    } else {
+      return res.status(400).json({ message: "No friend request found" });
+    }
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(400)
+      .json({ message: "Bad request", error: error.message });
+  }
 };
 
-exports.userStatus = async(req,res) => {
-    const {token} = req.body
-    try {
-        if( jwt.verify(token, 'secretKey'))
-        {
-            loggedInUser.status="Online"
-            loggedInUser.lastSeen="null"
-            return res.status(200).json ({ message: 'Token is valid' });
-        }
+exports.rejectFriendRequest = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const addedUser = await user.findOne({ email });
+    if (!addedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
-        else
-        {
-            if (err.name === 'TokenExpiredError') 
-                {
-                 
-                    loggedInUser.status ="Offline"
-                    loggedInUser.lastSeen = err.expiredAt;    
-        
-                  return res.status(400).json ({ error: 'Token has expired, user status updated to offline' });
-                }
-        }
-        
-        
-      } catch (err) {
-     
-        return res.status(404).json ({ error: "Invalid token" });
-       
+    const existingNotification = await Notification.findOne({
+      userId: loggedInUser._id,
+      sender: addedUser._id,
+      type: "friend_request",
+    });
+
+    await notificationControllers.deleteNotificationn(existingNotification._id);
+    return res
+      .status(200)
+      .json({ message: "You've rejected the friend request" });
+  } catch (error) {
+    return res
+      .status(400)
+      .json({ message: "Bad request", error: error.message });
+  }
+};
+
+exports.userStatus = async (req, res) => {
+  const { token } = req.body;
+  try {
+    if (jwt.verify(token, "secretKey")) {
+      loggedInUser.status = "Online";
+      loggedInUser.lastSeen = "null";
+      return res.status(200).json({ message: "Token is valid" });
+    } else {
+      if (err.name === "TokenExpiredError") {
+        loggedInUser.status = "Offline";
+        loggedInUser.lastSeen = err.expiredAt;
+
+        return res
+          .status(400)
+          .json({ error: "Token has expired, user status updated to offline" });
       }
+    }
+  } catch (err) {
+    return res.status(404).json({ error: "Invalid token" });
+  }
 };
 
-
-exports.logout = async (req,res) => {
-try {
-    
-    if(loggedInUser)
-        {
-            loggedInUser.status = "Offline"
-            loggedInUser.lastSeen = Date.now()
-            await loggedInUser.save()
-            loggedInUser = null
-            return res.status(200).json ({message : "You've logged out successfully "})
-        }
-
-    else {
-        return res.status(404).json ({message : "No logged in user found"})
-
+exports.logout = async (req, res) => {
+  try {
+    if (loggedInUser) {
+      loggedInUser.status = "Offline";
+      loggedInUser.lastSeen = Date.now();
+      await loggedInUser.save();
+      loggedInUser = null;
+      return res
+        .status(200)
+        .json({ message: "You've logged out successfully " });
+    } else {
+      return res.status(404).json({ message: "No logged in user found" });
     }
-} 
-
- catch (error) {
-
-    return res.status(400).json ({message : "Bad Request " , error : error.message})
-
-    
-}
-    
-}
+  } catch (error) {
+    return res
+      .status(400)
+      .json({ message: "Bad Request ", error: error.message });
+  }
+};
