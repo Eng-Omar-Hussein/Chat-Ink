@@ -1,84 +1,94 @@
 // notificationControllers.js
-const Notification = require('../models/NotificationModel');
+const Notification = require("../models/NotificationModel");
 
 // Create a new notification
 exports.createNotification = async (req, res) => {
   try {
-    const { userId, type, sender, message, room } = req.body;
-    
+    const { user, type, receiver, message, room } = req.body;
+
     const notification = new Notification({
-      userId,
+      sender: user,
       type,
-      sender,
+      receiver,
       message,
-      room
+      room,
     });
 
     await notification.save();
     res.status(201).json(notification);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to create notification', message: err.message });
+    res
+      .status(500)
+      .json({ error: "Failed to create notification", message: err.message });
   }
 };
 
 // Get notification by id
-exports.getUserNotificationById = async (req, res) => {
+exports.getNotificationById = async (req, res) => {
   try {
     const notID = req.params.id;
-    const notification = await Notification.findById(notID)
-      .populate('userId', 'name')
-      .populate('sender', 'name')
-      .populate('message', 'content')
-      .populate('room', 'name');
+    const notification = await Notification.findById(notID).populate(
+      "receiver sender message room"
+    );
 
     if (!notification) {
-      return res.status(404).json({ error: 'Notification not found' });
+      return res.status(404).json({ error: "Notification not found" });
     }
 
     res.status(200).json(notification);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to get notification', message: err.message });
+    res
+      .status(500)
+      .json({ error: "Failed to get notification", message: err.message });
   }
 };
 
-
-
-
 // Get messages for a specific user by userId (from request body)
-exports.getMessagesByUserId = async (req, res) => {
+exports.getNotificationByUserId = async (req, res) => {
   try {
-    const { userId } = req.body; // Get userId from the request body
+    const { user } = req.body; // Get userId from the request body
+    const notifications = await Notification.find({
+      receiver: user,
+    }).populate("receiver sender message room");
 
-    // Find all notifications where userId matches and type is 'message'
-    const notifications = await Notification.find({ userId: userId, type: 'message' })
-      .populate('sender', 'name') 
-      .populate('message', 'content') 
-      .populate('room', 'name'); 
-
-    if (!notifications || notifications.length === 0) {
-      return res.status(404).json({ error: 'No messages found for this user' });
+    if (!notifications) {
+      return res.status(404).json({ error: "No messages found for this user" });
     }
 
     res.status(200).json(notifications);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to get messages', message: err.message });
+    res
+      .status(500)
+      .json({ error: "Failed to get messages", message: err.message });
   }
 };
-
-
 
 // Mark notification as read
 exports.markAsRead = async (req, res) => {
   try {
-    const notificationId = req.params.id;
-    const notification = await Notification.findByIdAndUpdate(
-      notificationId,
-      { read: true, readAt: Date.now() },
-      { new: true }
-    );
-    res.status(200).json(notification);
+    const { user } = req.body;
+    const notifications = await Notification.find({
+      receiver: user,
+    }).populate("receiver sender message room");
+    if (!notifications) {
+      return res.status(404).json({ error: "No messages found for this user" });
+    }
+    notifications.forEach(async (noti) => {
+      console.log(noti);
+      noti.read = true;
+      noti.readAt = Date.now();
+      await noti.save();
+    });
+    // const notification = await Notification.findByIdAndUpdate(
+    //   notificationId,
+    //   { read: true, readAt: Date.now() },
+    //   { new: true }
+    // );
+    res.status(200).json(notifications);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to mark as read', message: err.message });
+    res
+      .status(500)
+      .json({ error: "Failed to mark as read", message: err.message });
   }
 };
 
@@ -89,43 +99,13 @@ exports.deleteNotification = async (req, res) => {
     const noti = await Notification.findByIdAndDelete(notificationId);
 
     if (!noti) {
-      return res.status(404).json({ error: 'Notification not found' });
+      return res.status(404).json({ error: "Notification not found" });
     }
 
-    res.status(200).json({ message: 'Notification deleted' });
+    res.status(200).json({ message: "Notification deleted" });
   } catch (err) {
-    res.status(500).json({ error: 'Failed to delete notification', message: err.message });
+    res
+      .status(500)
+      .json({ error: "Failed to delete notification", message: err.message });
   }
 };
-
-// Delete a notification
-exports.deleteNotificationn = async (notificationId) => {
-  try {
-    const noti = await Notification.findByIdAndDelete(notificationId);
-
-    if (!noti) {
-      console.log('Notification not found');
-    }
-  } catch (err) {
-  
-    console.log('Failed to delete notification');
-  }
-};
-
-
-exports.createNotificationn = async (userId, type, sender , message , room ) => {
-  try {
-    const notification = new Notification({
-      userId,
-      type,
-      sender,
-      message,
-      room
-    });
-    await notification.save();
-    console.log("done");
-  } catch (err) {
-    console.log("Failed to create notification");
-  }
-};
-

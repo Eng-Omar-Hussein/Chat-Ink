@@ -7,15 +7,15 @@ const groupsSchema = new Schema(
     visibility: { type: Boolean, default: false, required: true },
     admin: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "user",
+      ref: "User",
       required: true,
     },
     members: [
-      { type: mongoose.Schema.Types.ObjectId, ref: "user", required: true },
+      { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     ],
-    chat: { type: mongoose.Schema.Types.ObjectId, ref: "chat" },
+    chat: { type: mongoose.Schema.Types.ObjectId, ref: "Chat" },
     description: String,
-    photoURL: { type: String, default: "placeholder", required: true },
+    photoURL: { type: String, default: "placeholder" },
   },
   { timestamps: true }
 );

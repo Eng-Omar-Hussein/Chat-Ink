@@ -2,18 +2,24 @@ const express = require("express");
 
 const router = express.Router();
 
-// const {
-//   getPublicGroups,
-//   getPrivateGroups,
-//   createGroup,
-//   getGroupsById,
-//   updatePhotoGroup,
-// } = require("../controllers/groupsController");
+const {
+  getPublicGroups,
+  getPrivateGroups,
+  createGroup,
+  getGroupsById,
+  updateGroup,
+  addUserToGroup,
+  removeUserFromGroup,
+  getAllUsersInGroup,
+} = require("../controllers/groupsController");
 
-// router.get("/publicGroups", getPublicGroups);
-// router.get("/privateGroups", getPrivateGroups);
-// router.get("/:id", getGroupsById);
-// router.post("/", createGroup);
-// router.put("/:id", updatePhotoGroup);
+router.get("/publicGroups", getPublicGroups);
+router.get("/privateGroups", getPrivateGroups);
+router.get("/:id", getGroupsById);
+router.get("/users/:id", getAllUsersInGroup);
+router.post("/", createGroup);
+router.put("/:id", updateGroup);
+router.put("/addUser/:id", addUserToGroup);
+router.put("/removeUser/:id", removeUserFromGroup);
 
 module.exports = router;

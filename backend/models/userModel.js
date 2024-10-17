@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const bcryptjs = require("bcrypt");
 
 const userSchema = mongoose.Schema({
   firstName: {
@@ -24,7 +25,7 @@ const userSchema = mongoose.Schema({
   password: {
     type: String,
     required: true,
-    minlength: 3,
+    minlength: 8,
     validate: {
       validator: function (value) {
         return /[A-Z]/.test(value) && /[0-9]/.test(value);
@@ -38,11 +39,6 @@ const userSchema = mongoose.Schema({
     type: String,
   },
 
-  status: {
-    type: String,
-    default: "Offline",
-  },
-
   lastSeen: {
     type: Date,
     default: Date.now,
@@ -54,5 +50,11 @@ const userSchema = mongoose.Schema({
     },
   ],
 });
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
 
+  this.password = await bcryptjs.hash(this.password, 10);
+
+  next();
+});
 module.exports = mongoose.model("User", userSchema);

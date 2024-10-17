@@ -1,11 +1,12 @@
 const groups = require("../models/groupsModel");
+const Chat = require("../models/chat");
 
-exports.getPuplicGroups = async (req, res) => {
+exports.getPublicGroups = async (req, res) => {
   try {
-    console.log("iam is available getGroups");
     const group = await groups
       .find({ visibility: true })
-      .populate("user")
+      .populate("admin", "firstName lastName profilePic")
+      .populate("members", "firstName lastName profilePic")
       .populate("chat");
     if (!group) return res.status(404).json({ message: "Groups not found" });
     return res.json(group);
@@ -15,8 +16,11 @@ exports.getPuplicGroups = async (req, res) => {
 };
 exports.getPrivateGroups = async (req, res) => {
   try {
-    console.log("iam is available getGroups");
-    const group = await groups.find({ visibility: false });
+    const group = await groups
+      .find({ visibility: false })
+      .populate("admin", "firstName lastName profilePic")
+      .populate("members", "firstName lastName profilePic")
+      .populate("chat");
     if (!group) return res.status(404).json({ message: "Groups not found" });
     return res.json(group);
   } catch (err) {
@@ -26,35 +30,39 @@ exports.getPrivateGroups = async (req, res) => {
 exports.getGroupsById = async (req, res) => {
   try {
     let id = req.params.id;
-    const group = await groups.findById(id);
+    const group = await groups
+      .findById(id)
+      .populate("admin", "firstName lastName profilePic")
+      .populate("members", "firstName lastName profilePic")
+      .populate("chat");
     if (!group) return res.status(404).json({ message: "Groups not found" });
     return res.json(group);
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
 };
+
 exports.createGroup = async (req, res) => {
-  console.log("iam is available createGroup");
+  const { user, name, visibility, members, description, photoURL } = req.body;
 
-  const { name, visibility, admin, members, messages, description, photoURL } =
-    req.body;
-
-  if (!name || !visibility || !members || !admin || !photoURL) {
+  if (!name || visibility === undefined || !members) {
     return res.status(400).json({
-      error: "(name && visibility && members && admin && photoURL isrequired)",
+      error: "(name, visibility, and members are required)",
     });
   }
 
   try {
+    const chat = await new Chat({ participants: members }).save();
     const newGroup = new groups({
+      admin: user,
       name,
       visibility,
-      admin,
       members,
-      messages,
+      chat: chat._id,
       description,
       photoURL,
     });
+
     await newGroup.save();
 
     res.status(201).json({
@@ -62,24 +70,138 @@ exports.createGroup = async (req, res) => {
       group: newGroup,
     });
   } catch (error) {
-    console.error("Error creating group:", error);
-    res.status(500).json({ error: "Server error, unable to create group" });
+    res.status(500).json({
+      error: "Server error, unable to create group",
+      error: error.message,
+    });
   }
 };
-exports.updatePhotoGroup = async (req, res) => {
+exports.updateGroup = async (req, res) => {
   let id = req.params.id;
-  const { photoURL } = req.body;
+  const { name, visibility, description, photoURL } = req.body;
+
   try {
+    // Update the group and return the updated document
     const group = await groups.findByIdAndUpdate(
       id,
-      { photoURL },
+      {
+        $set: {
+          name,
+          visibility,
+          description,
+          photoURL,
+        },
+      },
+      { new: true } // Return the updated group
+    );
+
+    if (!group) {
+      return res.status(404).json({ message: "Group not found" });
+    }
+    await group.populate([
+      { path: "members", select: "firstName lastName profilePic" }, // Only show firstName and lastName for members
+      { path: "admin", select: "firstName lastName profilePic" }, // Populate all fields for admin
+      { path: "chat" }, // Populate all fields for chat
+    ]);
+
+    return res.json({
+      message: "Group updated successfully",
+      group,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+exports.addUserToGroup = async (req, res) => {
+  try {
+    let id = req.params.id;
+    const { userId } = req.body;
+
+    const group = await groups.findByIdAndUpdate(
+      id,
+      {
+        $push: { members: userId },
+      },
       { new: true }
     );
+
     if (!group) {
-      return res.status(404).send({ message: "Group not found" });
+      return res.status(404).json({ error: "Group not found" });
     }
-    return res.json({ message: "Group updated" }, group);
+    await group.populate([
+      { path: "members", select: "firstName lastName profilePic" }, // Only show firstName and lastName for members
+      { path: "admin", select: "firstName lastName profilePic" }, // Populate all fields for admin
+      { path: "chat" }, // Populate all fields for chat
+    ]);
+
+    return res.json({
+      message: "Group updated successfully",
+      group,
+    });
   } catch (error) {
-    return res.status(500).send({ message: "Server error" });
+    return res.status(500).json({ error: "An error occurred" });
+  }
+};
+
+exports.removeUserFromGroup = async (req, res) => {
+  let id = req.params.id; // Group ID
+  const { user, userId } = req.body; // User ID to be removed
+
+  try {
+    const check = await groups.findById(id);
+    if (!check) {
+      return res.status(404).json({ error: "Group not found" });
+    }
+    if (!check.members.includes(userId)) {
+      return res.status(400).json({ error: "User not found in group" });
+    }
+    if (check.admin.toString() !== user) {
+      return res.status(403).json({
+        error: "You are not authorized to remove members from this group.",
+      });
+    }
+    const group = await groups.findByIdAndUpdate(
+      id,
+      {
+        $pull: { members: userId }, // Use $pull to remove the userId from the members array
+      },
+      { new: true } // Return the updated document
+    );
+
+    if (!group) {
+      return res.status(404).json({ error: "Group not found" });
+    }
+    await group.populate([
+      { path: "members", select: "firstName lastName profilePic" }, // Only show firstName and lastName for members
+      { path: "admin", select: "firstName lastName profilePic" }, // Populate all fields for admin
+      { path: "chat" }, // Populate all fields for chat
+    ]);
+
+    return res.json({
+      message: "Group updated successfully",
+      group,
+    });
+  } catch (error) {
+    return res.status(500).json({ error: "An error occurred" });
+  }
+};
+
+exports.getAllUsersInGroup = async (req, res) => {
+  let id = req.params.id;
+  try {
+    const group = await groups
+      .findById(id)
+      .populate("members", "firstName lastName profilePic"); // Populate members with the specified fields
+
+    if (!group) {
+      return res.status(404).json({ error: "Group not found" });
+    }
+
+    return res.json(group.members);
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ error: "An error occurred", errormessage: error.message });
   }
 };

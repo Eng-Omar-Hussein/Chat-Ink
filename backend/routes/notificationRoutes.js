@@ -1,14 +1,13 @@
 // routes/notificationRoutes.js
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const notificationController = require('../controllers/notificationControllers');
+const notificationController = require("../controllers/notificationControllers");
 
 // Define notification routes
-router.post('/', notificationController.createNotification);
-router.get('/:id', notificationController.getUserNotificationById );
-router.patch('/:id/read', notificationController.markAsRead);
-router.delete('/:id', notificationController.deleteNotification);
-router.post('/messages', notificationController.getMessagesByUserId); 
-
+router.get("/", notificationController.getNotificationByUserId);
+router.get("/:id", notificationController.getNotificationById);
+router.post("/", notificationController.createNotification);
+router.patch("/read", notificationController.markAsRead);
+router.delete("/:id", notificationController.deleteNotification);
 
 module.exports = router;
