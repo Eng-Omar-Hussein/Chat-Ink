@@ -35,14 +35,12 @@ function Form() {
           Don't have an account?
           <small className="ms-2" onClick={() => navigate("/signUp")} style={{ cursor: "pointer", color: "#6FB1B6" }} >Sign Up!</small>
         </small>
-        <small className="ms-2" onClick={() => console.log("send password to your email")} style={{ cursor: "pointer", color: "#6FB1B6" }} >Forget Password ?</small>
+        <small className="ms-2 mb-3" onClick={() => console.log("send password to your email")} style={{ cursor: "pointer", color: "#6FB1B6" }} >Forget Password ?</small>
       </div>
 
 
     </form>
-
-
-  )
+  );
 }
 
 export default Form
