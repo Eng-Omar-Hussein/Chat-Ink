@@ -46,16 +46,17 @@ const GroupParticipantsListPage = () => {
   return (
     <div className="chat-participants">
 
-      <div className="chat-header">
-        <div className="d-flex align-items-center mb-3">
+      <div className="chat-header ">
+        <div className="d-flex align-items-center m-3">
           <img
             src={back}
             alt="Back"
             className="me-3"
             onClick={()=>  window.history.back()}
             style={{ cursor: "pointer" }}
-            width="30"
-            height="30"
+            width="25"
+            height="25"
+           
           />
           <img
             id="profilePhoto"
