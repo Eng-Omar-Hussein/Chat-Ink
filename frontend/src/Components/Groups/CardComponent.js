@@ -4,7 +4,7 @@ const CardComponent = (props) => {
     const { groupName, groupPic } = props;
 
     return (
-        <div className="col-md-6 mb-4" style={{marginTop:"10px"}}> 
+        <div className="mb-4" style={{marginTop:"10px"}}> 
             <div className="card" style={{ width: "18rem" }}>
                 <img src={groupPic} style={{width:"100px" , height:"100px" , marginLeft:"90px", marginTop:"20px"}} className="card-img-top" alt="Card image cap" />
                 <div className="card-body">
