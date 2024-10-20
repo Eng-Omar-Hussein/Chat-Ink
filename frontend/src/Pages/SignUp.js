@@ -17,7 +17,7 @@ function SignUp() {
         <div className="text-center">Link In, Chat On – With ChatLink</div>
         <div className="mb-5 text-center" style={text}>Signup to ChatLink</div>
         <FormPlus edit={false}/>
-        <div className="d-flex mt-2 " style={{ fontSize: "small" }}>
+        <div className="d-flex mt-2 mb-3 " style={{ fontSize: "small" }}>
           <small>
             Have an account ?
             <small className="ms-2" onClick={() => navigate("/")} style={{ cursor: "pointer", color: "#6FB1B6" }} >Login</small>
