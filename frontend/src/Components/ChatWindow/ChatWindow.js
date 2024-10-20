@@ -1,8 +1,13 @@
-import React, { useState, useEffect , useRef } from 'react';
+// src/components/ChatWindow.js
+import React, { useState, useEffect, useRef } from 'react';
 import MessageInputContainer from '../MessageInputContainer/MessageInputContainer';
 import back from '../icons/back.png'; 
 import './ChatWindow.css';
 import { useNavigate } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+
+     
 
 function ChatWindow({ name, profilePicture, onBackClick }) {
   const navigate = useNavigate();
@@ -24,20 +29,18 @@ function ChatWindow({ name, profilePicture, onBackClick }) {
   };
 
   const handleSendMessage = (message) => {
-
     if (message.trim() === '') {
-        setWarning('EMPTY MESSAGE!'); // Warning for empty message
-        setTimeout(() => {
-            setWarning('');
-          }, 1500);
-    
-          return; // Prevent sending empty message
-        }
+      setWarning('EMPTY MESSAGE!'); // Warning for empty message
+      setTimeout(() => {
         setWarning('');
+      }, 1500);
+      return; // Prevent sending empty message
+    }
+    setWarning('');
     // Add the sent message
     setMessages((prevMessages) => [
       ...prevMessages,
-      { content: message, isSender: true , time:getCurrentTime() },
+      { content: message, isSender: true, time: getCurrentTime() },
     ]);
   };
 
@@ -49,11 +52,10 @@ function ChatWindow({ name, profilePicture, onBackClick }) {
       "Absolutely!",
       "Thanks for sharing!",
     ];
-    const randomReply =
-      replies[Math.floor(Math.random() * replies.length)];
+    const randomReply = replies[Math.floor(Math.random() * replies.length)];
     setMessages((prevMessages) => [
       ...prevMessages,
-      { content: randomReply, isSender: false , time:getCurrentTime() },
+      { content: randomReply, isSender: false, time: getCurrentTime() },
     ]);
   };
 
@@ -67,50 +69,54 @@ function ChatWindow({ name, profilePicture, onBackClick }) {
     }
   }, [messages]);
 
-  
   return (
-    
-    <div className="chat-content">
-      <div className="chat-header">
-        <div className="chat-header-info">
-          <img
-            src={back}
-            alt="Back"
-            className="back-arrow"
-            onClick={onBackClick} // Call onBackClick to go back
-            style={{ cursor: 'pointer' }} // Optional: Add cursor pointer for better UX
-          />
-          <img
-            id="profilePhoto"
-            src={profilePicture}
-            alt="Profile Photo"
-            width="50"
-            height="50"
-          />
-          <h2 id="chatName" className="clickable" onClick={() => navigate('/groupParticipantsListPage')}>{name}</h2>
-        </div>
+    <div className="chat-content d-flex flex-column flex-grow-1">
+      <div className="chat-header d-flex align-items-center p-2">
+        <img
+          src={back}
+          alt="Back"
+          className="back-arrow me-2"
+          onClick={onBackClick}
+        />
+        <img
+          id="profilePhoto"
+          src={profilePicture}
+          alt="Profile Photo"
+          className="rounded-circle me-2"
+          width="50"
+          height="50"
+        />
+        <h2 id="chatName" className="clickable" onClick={() => navigate('/groupParticipantsListPage')}>
+          {name}
+        </h2>
       </div>
 
-        {/* Display warning message */}
-        <div className='Warning'>
-        {warning && <div className="warning-message">{warning}</div>}
+     {/* Display warning message */}
+{warning && (
+  <div className="warning-message text-danger fw-bold mb-3 p-2 border rounded">
+    {warning}
+  </div>
+)}
 
-        </div>
-      <div id="chat-box">
-      
+      <div id="chat-box" className="border p-2 overflow-auto " style={{borderRadius:'30px', height: '70vh', backgroundColor: '#f1f1f15d' }}>
         {/* Display messages */}
         {messages.map((msg, index) => (
-       <div key={index} className={`message- ${msg.isSender ?'sent' :'received'}`}>
-       <p>
-       {msg.isSender ? <strong>You:</strong> : <strong>{name}:</strong>} {msg.content}
-       </p>
-       <span className="message-time">{msg.time}</span> {/* Display timestamp */}
-     </div>
-   ))}
-      <div ref={chatEndRef} /> {/* Empty div to scroll to */}
+          <div key={index} className={`message ${msg.isSender ? 'sent' : 'received'} mb-2`}>
+          <p>
+            {msg.isSender ? <strong>You:</strong> : <strong>{name}:</strong>} {msg.content}
+          </p>
+          <span className="message-time">{msg.time}</span> {/* Display timestamp */}
+          </div>
+        
+
+   
+        ))}
+        <div ref={chatEndRef} /> {/* Empty div to scroll to */}
       </div>
+
       <MessageInputContainer onSend={handleSendMessage} />
     </div>
+  
   );
 }
 
