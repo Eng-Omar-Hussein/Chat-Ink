@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ChatWindow from "../Components/ChatWindow/ChatWindow";
-import Navbar from "../Components/Navbar/Navbar";
 import ChatList from "../Components/ChatList/ChatList";
 import "./ChatPage.css";
 
@@ -22,12 +21,12 @@ function ChatPage() {
   };
 
   return (
-    <>
-      <div className="chat-container">
-        <div className="chat-list">
+    <div className="container-fluid">
+      <div className="row h-100">
+        <div className="col-md-4 col-lg-4 border-end chat-list">
           <ChatList onChatClick={handleChatClick} />
         </div>
-        <div className="chat-window">
+        <div className=" chat-window">
           {selectedChat && (
             <ChatWindow
               name={selectedChat.name}
@@ -37,7 +36,7 @@ function ChatPage() {
           )}
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
