@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import styles from "../ThirdPage/styles.module.css";
+import styles from "./styles.module.css";
 import icon from "../../../Assets/R (2) 1.png";
 import groupImage from "../../../Assets/meeting-icon-30 1.png";
 import { useNavigate } from "react-router-dom";
@@ -9,6 +9,7 @@ export default function ThirdPage() {
   const [groupName, setGroupName] = useState(""); // Ensure groupName state is defined
   const navigate = useNavigate();
   const [successMessage, setSuccessMessage] = useState("");
+
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -39,16 +40,18 @@ export default function ThirdPage() {
     setTimeout(() => navigate('/MainPage'), 3000);
   };
 
-  return (
+
+
+ return (
     <form onSubmit={handleSubmit}>
-      <div className="container d-flex flex-column mb-5" style={{ height: "80vh", justifyContent: "center", padding: "0" }}>
+      <div className="container d-flex flex-column mb-2" style={{ height: "80vh", justifyContent: "center", padding: "0" }}>
         
         <div className="row align-items-center mt-6">
-          <div className="col mt-4">
-            <label className="me-3 mt-n5" style={{ fontWeight: "bold", fontSize: "20px" }}>Group Picture</label>
+          <div className="col mt-2">
+            <label className="me-3 mt-n5 m-3" style={{ fontWeight: "bold", fontSize: "20px" }}>Group Picture</label>
           </div>
           <div className="d-flex align-items-center justify-content-center me-4 mb-5 mt-n1">
-            <img src={image} alt="Group" style={{ width: "150px", height: "150px" }} />
+            <img src={image} alt="Group" style={{ width: "110px", height: "110px" }} />
           </div>
         </div>
 
@@ -63,14 +66,14 @@ export default function ThirdPage() {
             <img
               src={icon}
               alt="Camera Icon"
-              style={{ width: "30px", height: "30px" }}
+              style={{ width: "25px", height: "25px" }}
               className="me-2"
             />
             <span style={{ fontWeight: "bold" }}>Add photo</span>
           </label>
         </div>
 
-        <div className="mt-4">
+        <div className="mt-4 m-3">
           <label style={{ fontWeight: "bold", fontSize: "20px" }}>Group Name</label>
           <input
             required
@@ -82,7 +85,7 @@ export default function ThirdPage() {
           />
         </div>
 
-        <div className="mt-3">
+        <div className="mt-3 m-3">
           <label style={{ fontWeight: "bold", fontSize: "20px" }}>Group Type</label>
           <select className={`col-12 ${styles.input}`} required>
             <option value="public">Public</option>
@@ -90,7 +93,7 @@ export default function ThirdPage() {
           </select>
         </div>
 
-        <button type="submit" className={`${styles.btn} mt-5`}>
+        <button type="submit" className={`${styles.btn} mt-3`}>
           Create Group
         </button>
 
@@ -108,5 +111,5 @@ export default function ThirdPage() {
         )}
       </div>
     </form>
-  );
+  ); 
 }
