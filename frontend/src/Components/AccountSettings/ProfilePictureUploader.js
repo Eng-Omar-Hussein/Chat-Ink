@@ -22,35 +22,45 @@ const ProfilePictureUploader = () => {
     };
 
     return (
-        <div className="col-7">
-            <img
-                src={selectedImage}
-                style={{
-                    borderRadius: "50%",
-                    display: "block",
-                    width: "200px",
-                    height: "200px",
-                    paddingUp : "20px"
-                }}
-                alt="Profile"
-            />
-            <input 
-                type="file" 
-                accept="image/*" 
-                onChange={handleImageChange} 
-                ref={fileInputRef}
-                style={{ display: 'none' }} 
-            />
-            <button 
-                type="button" 
-                className="btn btn-outline-secondary" 
-                style={{ fontSize: "20px" , marginTop: "15px" , marginLeft:"-10px"}} 
-                onClick={handleButtonClick} 
-            >
-                Change Profile Picture
-            </button>
-        </div>
-    );
+        <div className="col-12 col-md-6 d-flex flex-column align-items-center">
+       
+        <img
+          src={selectedImage}
+          style={{
+            borderRadius: "50%",
+            display: "block",
+            width: "100%", 
+            maxWidth: "200px", 
+            height: "auto", 
+            paddingTop: "20px", 
+          }}
+          alt="Profile"
+        />
+      
+      
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleImageChange}
+          ref={fileInputRef}
+          style={{ display: "none" }}
+        />
+      
+       
+        <button
+          type="button"
+          className="btn btn-outline-secondary mt-3"
+          style={{
+            fontSize: "1.2rem", 
+            padding: "10px 20px", 
+            marginTop: "15px",
+          }}
+          onClick={handleButtonClick}
+        >
+          Change Profile Picture
+        </button>
+      </div>
+    );      
 };
 
 export default ProfilePictureUploader;
