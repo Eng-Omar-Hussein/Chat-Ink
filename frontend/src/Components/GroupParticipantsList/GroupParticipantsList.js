@@ -4,7 +4,7 @@ const GroupParticipantsList = (props) => {
     const {name , profilePic , removeParticipant , participant } = props
   return (
     <div>
-      <div id="participant" className="d-flex align-items-center justify-content-between mt-5 me-4 ms-5">
+      <div id="participant" className="d-flex align-items-center justify-content-between mt-5 me-4 ms-5 mb-5">
         <div className="d-flex align-items-center">
           <img
             src={profilePic}
