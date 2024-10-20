@@ -3,7 +3,8 @@ import '../ChatList/ChatList.css';
 import chat1 from '../icons/chat1.png';
 import chat2 from '../icons/chat2.png';
 import group from '../icons/group.png';
-import search from '../icons/search.png';
+import SearchBar from '../SearchBar/SearchBar'; // Import the new SearchBar component
+
 
 
 function ChatList({ onChatClick }) {
@@ -24,10 +25,7 @@ function ChatList({ onChatClick }) {
         <div className="chats-view">
             <div className="chats-header">
                 <h2>Chats</h2>
-                <div className="search-container">
-                    <input type="text" id="searchBar" placeholder="Search Chats.." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
-                    <img src={search} alt="Search Icon" className="search-icon" />
-                </div>
+                <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
             </div>
 
             <div className="chats-container">
