@@ -1,30 +1,5 @@
 const Message = require("../models/message");
 
-exports.createMessage = async (req, res) => {
-  const { user, content, readBy } = req.body;
-
-  if (!content) {
-    return res.status(400).json({ error: "Sender and content are required." });
-  }
-
-  try {
-    const newMessage = await new Message({
-      sender: user,
-      content,
-      readBy,
-    }).save();
-    await newMessage.populate([
-      { path: "sender", select: "firstName lastName profilePic" }, // Only show firstName and lastName for members
-      { path: "readBy", select: "firstName lastName profilePic" }, // Populate all fields for admin
-    ]);
-    res.status(201).json(newMessage);
-  } catch (error) {
-    res
-      .status(500)
-      .json({ error: "Failed to create message", message: error.message });
-  }
-};
-
 exports.getMessageById = async (req, res) => {
   const { messageId } = req.params;
 

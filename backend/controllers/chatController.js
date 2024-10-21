@@ -1,6 +1,5 @@
 const Chat = require("../models/chat");
 const Message = require("../models/message");
-const mongoose = require("mongoose");
 
 exports.createChat = async (req, res) => {
   const { participants } = req.body;
@@ -31,7 +30,7 @@ exports.getChatById = async (req, res) => {
     if (!chat) return res.status(404).json({ error: "Chat not found" });
     await chat.populate([
       { path: "participants", select: "firstName lastName profilePic" },
-      "messages", // Only show firstName and lastName for members
+      "messages",
     ]);
     res.status(200).json(chat);
   } catch (err) {
@@ -60,26 +59,26 @@ exports.getUserChats = async (req, res) => {
 
 exports.addMessageToChat = async (req, res) => {
   const { chatId } = req.params;
-  const { sender, content, readBy } = req.body;
+  const { user, content, readBy } = req.body;
   try {
     const chat = await Chat.findById(chatId);
     if (!chat) {
       return res.status(404).json({ error: "Chat not found" });
     }
-    if (!content || !sender) {
+    if (!content) {
       return res
         .status(400)
-        .json({ error: "Sender and content are required." });
+        .json({ error: "Content is required." });
     }
 
     const newMessage = await new Message({
-      sender,
+      sender: user,
       content,
       readBy,
     }).save();
     await newMessage.populate([
-      { path: "sender", select: "firstName lastName profilePic" }, // Only show firstName and lastName for members
-      { path: "readBy", select: "firstName lastName profilePic" }, // Populate all fields for admin
+      { path: "sender", select: "firstName lastName profilePic" },
+      { path: "readBy", select: "firstName lastName profilePic" }, 
     ]);
 
     if (!chat.messages.includes(newMessage._id)) {

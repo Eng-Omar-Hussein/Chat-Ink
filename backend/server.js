@@ -1,9 +1,11 @@
-const express = require("express");
-
+const express = require('express');
+const http = require('http');
+const { Server } = require('socket.io');
+const cors = require('cors');
 const connectDB = require("./config/db");
 
 const app = express();
-
+const server = http.createServer(app);
 // Routes
 const groupRoutes = require("./routes/groupRoutes");
 const chatRoutes = require("./routes/chatRoutes");
@@ -12,8 +14,17 @@ const notificationRoutes = require("./routes/notificationRoutes");
 const userRoutes = require("./routes/userRoutes");
 const authRoutes = require("./routes/authRoutes");
 const authMiddleware = require("./controllers/authMiddleware");
+
 connectDB();
 
+// Set up Socket.IO server
+const io = new Server(server, {
+  cors: {
+    origin: 'http://localhost:3000', // Frontend URL
+  }
+});
+
+app.use(cors());
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);
@@ -23,6 +34,28 @@ app.use("/api/messages", authMiddleware, messageRoutes);
 app.use("/api/notifications", authMiddleware, notificationRoutes);
 app.use("/api/user", authMiddleware, userRoutes);
 
-app.listen(5000, () => {
+io.on('connection', (socket) => {
+  console.log('User connected:', socket.id);
+  
+  // Join Room event
+  socket.on('joinRoom', (roomName) => {
+    socket.join(roomName);
+    console.log(`User ${socket.id} joined room: ${roomName}`);
+  });
+
+  // Receive message and broadcast it to the room
+  socket.on('sendMessage', (data) => {
+    const { _id, content } = data;
+    io.to(_id).emit('receiveMessage', data);
+    console.log(`Message from ${socket.id} in room ${_id}: ${content}`);
+  });
+
+  // Handle disconnect
+  socket.on('disconnect', () => {
+    console.log('User disconnected:', socket.id);
+  });
+});
+
+server.listen(5000, () => {
   console.log("Server listening on port 5000");
 });
