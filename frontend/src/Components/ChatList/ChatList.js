@@ -10,12 +10,7 @@ import { fetchChats, fetchLoggedInUser } from '../../redux/chatSlice';
 
 
 function ChatList({ onChatClick }) {
-    const dispatch = useDispatch();
-    useEffect(() => {
-        dispatch(fetchChats());
-        dispatch(fetchLoggedInUser());
-    }, [dispatch]);
-
+    
     const chats = [
         { id: 1, name: 'Alex Linderson', lastMessage: 'Hey! How are you?', time: '2:30 PM', messageCount: 2, img: chat1 },
         { id: 2, name: 'John Abraham', lastMessage: 'Let’s catch up soon!', time: '2:10 PM', messageCount: 1, img: chat1 },
@@ -24,11 +19,19 @@ function ChatList({ onChatClick }) {
     ];
 
     const conversations = useSelector((state) => state.chat.chats);
-    const loading = useSelector((state) => state.chat.status === 'loading');
+    const loading = useSelector((state) => state.chat.chatStatus === 'loading');
     const error = useSelector((state) => state.chat.error);
     const loggedInUser = useSelector((state) => state.chat.loggedInUser);
     const loggedInUserId = loggedInUser ? loggedInUser._id : null;
+    const statues = useSelector((state) => state.room.status==="succeeded");
     const [searchTerm, setSearchTerm] = useState('');
+    const dispatch = useDispatch();
+    
+    useEffect(() => {
+        dispatch(fetchLoggedInUser());
+        dispatch(fetchChats());
+    }, [statues]);
+    
 
     const groups = conversations.filter(con => con.participants.length !== 2)
     const chat121 = conversations.filter(con => con.participants.length === 2)

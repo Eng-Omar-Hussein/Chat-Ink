@@ -61,10 +61,10 @@ function ChatWindow({ name, profilePicture, onBackClick, roomName, chats }) {
   const joinRoom = () => {
     if (roomName.trim()) {
       socket.emit('joinRoom', roomName);
-      dispatch(setRoom(roomName));
     }
   };
-  useEffect(() => joinRoom(), []);
+  dispatch(setRoom(roomName));
+  useEffect(() => joinRoom(), [currentRoom]);
 
   const sendMessage = (message) => {
     if (currentRoom) {
