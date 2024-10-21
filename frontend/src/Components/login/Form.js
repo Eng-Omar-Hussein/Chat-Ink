@@ -3,12 +3,13 @@ import styles from "./FormStyle.module.css";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../../redux/userSlice";
+
 function Form() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
-
+  const err = true;
   const handleLogin = async (event) => {
     event.preventDefault();
     const login = await dispatch(loginUser({ email, password }));
@@ -49,6 +50,10 @@ function Form() {
           required
         />
       </div>
+      <div className={`${err ? styles.error : styles.sr_only} m-3`}>
+        your email or password is wrong
+      </div>
+
       <button
         type="submit"
         className="btn btn-outline-secondary col-12 my-3"
@@ -71,7 +76,7 @@ function Form() {
           </small>
         </small>
         <small
-          className="ms-2"
+          className="ms-2 mb-3"
           onClick={() => console.log("send password to your email")}
           style={{ cursor: "pointer", color: "#6FB1B6" }}
         >

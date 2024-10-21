@@ -1,7 +1,5 @@
 import "./App.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { Provider } from "react-redux";
-
 import Login from "./Pages/Login";
 import Notifications from "./Pages/Notifications";
 import AccountSettings from "./Pages/AccountSettings";
@@ -11,22 +9,27 @@ import ChatPage from "./Pages/ChatPage";
 import CreateGroup from "./Pages/CreateGroup/CreateGroup";
 import AddFriends from "./Pages/AddFriends/AddFriends";
 import Navbar from "./Components/Navbar/Navbar";
-import SecondPage from "./Pages/CreateGroup/SecondPage/SecondPage";
-import { store } from "./redux/store";
+import GroupParticipantsListPage from "../src/Pages/GroupParticipantsListPage";
+import CreateGroupSecondPage from "../src/Pages/CreateGroup/SecondPage/SecondPage"
+import CreateGroupThirdPage from "../src/Pages/CreateGroup/ThirdPage/ThirdPage"
+import NotFoundPage from "./Pages/NotFoundPage";
+import { Provider } from "react-redux";
+
+
 function App() {
   return (
-    <Provider store={store}>
+
+        <Provider store={store}>
+
       <Router>
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
-          <Route path="/secoundPageGroup" element={<SecondPage />} />
           <Route
             path="/MainPage"
             element={
               <>
-                <Navbar></Navbar>
-
+                <Navbar notificationRead={false}></Navbar>
                 <MainPage />
               </>
             }
@@ -35,7 +38,7 @@ function App() {
             path="/ChatPage"
             element={
               <>
-                <Navbar></Navbar>
+                <Navbar notificationRead={true}></Navbar>
                 <ChatPage />
               </>
             }
@@ -44,7 +47,7 @@ function App() {
             path="/accountSettings"
             element={
               <>
-                <Navbar></Navbar>
+                <Navbar notificationRead={true}></Navbar>
                 <AccountSettings />
               </>
             }
@@ -53,7 +56,7 @@ function App() {
             path="/notifications"
             element={
               <>
-                <Navbar></Navbar>
+                <Navbar notificationRead={true}></Navbar>
                 <Notifications />
               </>
             }
@@ -62,7 +65,7 @@ function App() {
             path="/createGroup"
             element={
               <>
-                <Navbar></Navbar>
+                <Navbar notificationRead={true}></Navbar>
                 <CreateGroup />
               </>
             }
@@ -71,19 +74,44 @@ function App() {
             path="/addFriends"
             element={
               <>
-                <Navbar></Navbar>
+                <Navbar notificationRead={true}></Navbar>
                 <AddFriends />
               </>
             }
           />
+
           <Route
-            path="*"
+            path="/groupParticipantsListPage"
             element={
               <>
-                <h1>wrong page</h1>
+               <Navbar NotificationRead={true}></Navbar>
+              <GroupParticipantsListPage />
               </>
             }
-          ></Route>
+          />
+
+          <Route
+            path="/createGroupSecondPage"
+            element={
+              <>
+               <Navbar NotificationRead={true}></Navbar>
+              <CreateGroupSecondPage/>
+              </>
+            }
+          />
+
+          <Route
+            path="/createGroupThirdPage"
+            element={
+              <>
+               <Navbar NotificationRead={true}></Navbar>
+              <CreateGroupThirdPage/>
+              </>
+            }
+          />  
+
+        <Route path="*" element={<NotFoundPage />} />
+
         </Routes>
       </Router>
     </Provider>

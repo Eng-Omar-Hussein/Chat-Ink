@@ -1,44 +1,26 @@
-
-.chat-container {
-    display: flex; /* Use flexbox layout */
-    height: 83vh; /* Full viewport height */
-  
-}
-
-/* Chat List Styles */
 .chat-list {
-    width: 400px; /* Fixed width for the chat list */
-    border-right: 1px solid #ddd; /* Optional border for separation */
-    overflow-y: auto; /* Allow scrolling if the chat list is long */
-}
-
-
-.chat-window {
-    flex: 1; /* Take up the remaining space */
+    height: 85vh; /* Full viewport height */
+    overflow-y: auto; /* Scroll if content overflows */
+  }
+  
+  .chat-window {
+    flex: 1;
+    height: 83vh;
     display: flex;
     flex-direction: column;
-}
-
-/* Chat Window Content */
-.chat-content {
-    flex: 1; /* Allow chat content to grow */
-    padding: 1rem; /* Padding around the chat content */
-    overflow-y: auto; /* Enable scrolling for long chats */
-}
-
-@media screen and (max-width: 1200px) {
-.chat-list{
-    width: 350px;
-
-}
-}
+  }
+  
+  .chat-content {
+    flex: 1; 
+    padding: 1rem; 
+    overflow-y: auto; 
+  }
+  
+  @media screen and (max-width: 900px) {
+    .chat-list {
+      display: none; /* Hide chat list on smaller screens */
+    }
+  }
 
 
-@media screen and (max-width: 900px) {
-.chat-list{
-    display: none;
-}
-
-
-
-}
+  

@@ -5,8 +5,6 @@ import { useState } from 'react';
 
 function MessageInputContainer({ onSend }) {
   const [userMessage, setUserMessage] = useState('');
-  const [message, setMessage] = useState('');
-
   const handleSend = (e) => {
     e.preventDefault();
     if (userMessage.trim()) {
@@ -14,24 +12,19 @@ function MessageInputContainer({ onSend }) {
       setUserMessage('');
     }
   };
-
-  const handleSendClick = () => {
-    onSend(message); // Call the onSend function from props
-    setMessage(''); // Clear the input after sending
-  };
-
   return (
-    <div >
-      <form className="message-input-container" onSubmit={handleSend}>
+    <div className="message-input-container ">
+      <form className="input-group" onSubmit={handleSend}>
         <input
           type="text"
+          className="form-control"
           id="user-message"
           placeholder="Type a message..."
           value={userMessage}
           onChange={(e) => setUserMessage(e.target.value)}
         />
-        <button id="sendButton" type="submit" onClick={handleSendClick}>
-          <img src={send} alt="Send" />
+        <button className="btn" type="submit" id="sendButton">
+          <img src={send} alt="Send" className="send-icon" />
         </button>
       </form>
     </div>

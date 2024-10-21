@@ -1,21 +1,18 @@
-/* input */
+/* MessageInputContainer.css */
+
 .message-input-container {
-  display:flex;
-  align-items: center;
   padding: 10px;
   border-top: 1px solid #ddd;
-  height: 50px;
+  margin-top: 10px;
+}
 
-  
+.input-group {
+  display: flex; /* Keep the flex display */
+  align-items: center;
+  height: 50px; /* Set the height for the input group */
 }
-.message-input-container button {
-  background-color:#cccccc48;
-  border: none;
-  margin-left: 10px;
-  cursor: pointer;
-}
+
 #user-message {
-  flex-grow: 1;
   padding: 10px 15px;
   font-size: 15px;
   font-family: 'Times New Roman', Times, serif;
@@ -26,35 +23,34 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   transition: border 0.3s ease;
   background-color: #3333331c;
-
 }
 
-#messageInput:focus {
+#user-message:focus {
   border-color: #2d64bc;
 }
+
 #sendButton {
-  color: 3333331c;
+  background-color: #cccccc48;
   border: none;
-  border-radius: 50%;
- margin-left: 2px;
   height: 40px;
   width: 40px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-    padding: 0 20px;
+  padding: 0; /* Remove padding for consistent sizing */
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.374);
-   font-size: 16px;
+  font-size: 16px;
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
+
 #sendButton:hover {
   background-color: #d9dbdfac; 
   transform: scale(1.05); 
 }
-#sendButton img {
+
+.send-icon {
   width: 25px; /* Icon size */
   height: 25px;
   vertical-align: middle;
 }
-
