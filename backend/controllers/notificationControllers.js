@@ -5,7 +5,7 @@ const Notification = require("../models/NotificationModel");
 exports.createNotification = async (req, res) => {
   try {
     const { user, type, receiver, message, room } = req.body;
-
+    console.log(req.body);
     const notification = new Notification({
       sender: user,
       type,
@@ -13,7 +13,7 @@ exports.createNotification = async (req, res) => {
       message,
       room,
     });
-
+    console.log(notification);
     await notification.save();
     res.status(201).json(notification);
   } catch (err) {
@@ -49,7 +49,7 @@ exports.getNotificationByUserId = async (req, res) => {
     const { user } = req.body; // Get userId from the request body
     const notifications = await Notification.find({
       receiver: user,
-    }).populate("receiver sender message room");
+    }).populate("sender message room");
 
     if (!notifications) {
       return res.status(404).json({ error: "No messages found for this user" });

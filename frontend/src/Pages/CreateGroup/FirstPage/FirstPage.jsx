@@ -1,14 +1,18 @@
-import { useEffect, useState } from "react";
+import { Link } from "react-router-dom"; // Import Link from react-router-dom//+
+
 import SearchInput from "../../../Components/SearchInput/SeacrhInput";
 import AddUser from "../../../Components/AddUser/AddUser";
 import styles from "./styles.module.css";
-import user from "../../../Assets/Ellipse 308.png";
-const DUMMY_USERS = [
-  { name: "Moaz", img: user },
-  { name: "Omar", img: user },
-  { name: "ibrahim", img: user },
-];
-export default function App() {
+import { useSelector } from "react-redux";
+
+import { useState } from "react";
+
+export default function App({ setCurrentPage, setParticipant, participant }) {
+  const user = useSelector((state) => state.user.data);
+  const [friends, setFriends] = useState(user.friends);
+  const goToCreateGroup = () => {
+    setCurrentPage(1);
+  };
   return (
     <div className="container col-12">
       <div className="d-flex justify-content-between mt-5 c col-12">
@@ -17,11 +21,25 @@ export default function App() {
           <SearchInput className={"col-12"} />
         </div>
       </div>
-      {DUMMY_USERS.map((user) => {
-        return <AddUser name={user.name} img={user.img}></AddUser>;
+      {friends?.map((user) => {
+        console.log(user);
+        return (
+          <AddUser
+            name={user.name}
+            img={user.profilePic}
+            id={user._id}
+            friends={friends}
+            setFriends={setFriends}
+            setParticipant={setParticipant}
+            participant={participant}
+            group={true}
+          ></AddUser>
+        );
       })}
       <div className="d-flex ">
-        <button className={`${styles.btn} ms-auto`}>Next</button>
+        <button className={`${styles.btn} ms-auto`} onClick={goToCreateGroup}>
+          Next
+        </button>
       </div>
     </div>
   );

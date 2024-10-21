@@ -1,6 +1,5 @@
 const Chat = require("../models/chat");
 const Message = require("../models/message");
-const mongoose = require("mongoose");
 
 exports.createChat = async (req, res) => {
   const { participants } = req.body;
@@ -60,20 +59,20 @@ exports.getUserChats = async (req, res) => {
 
 exports.addMessageToChat = async (req, res) => {
   const { chatId } = req.params;
-  const { sender, content, readBy } = req.body;
+  const { user, content, readBy } = req.body;
   try {
     const chat = await Chat.findById(chatId);
     if (!chat) {
       return res.status(404).json({ error: "Chat not found" });
     }
-    if (!content || !sender) {
+    if (!content || !user) {
       return res
         .status(400)
         .json({ error: "Sender and content are required." });
     }
 
     const newMessage = await new Message({
-      sender,
+      sender: user,
       content,
       readBy,
     }).save();

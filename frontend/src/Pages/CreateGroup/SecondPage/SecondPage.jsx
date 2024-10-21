@@ -4,9 +4,9 @@ import styles from "./styles.module.css";
 import icon from "../../../Assets/R (2) 1.png";
 import groupImage from "../../../Assets/meeting-icon-30 1.png";
 
-export default function SecondPage() {
+export default function SecondPage({ participant }) {
   const [image, setImage] = useState(groupImage);
-
+  console.log(participant);
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -18,7 +18,7 @@ export default function SecondPage() {
     }
   };
   return (
-    <div className="container d-flex flex-wrap" style={{ height: "100vh" }}>
+    <div className="container d-flex flex-wrap" style={{ height: "60vh" }}>
       <div className="mt-5  col-12 d-flex gap-4 align-items-center">
         <div className="col-3">
           <img src={image} alt="" style={{ width: "150px", height: "150px" }} />

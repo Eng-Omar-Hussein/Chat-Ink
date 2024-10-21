@@ -4,11 +4,13 @@ const {
   addFriend,
   removeFriend,
   userInfo,
+  getNonFriends,
 } = require("../controllers/userController");
 
 const router = express.Router();
 
 router.get("/", userInfo);
+router.get("/suggestFriends", getNonFriends);
 router.put("/accountSettings", updateUserInfo);
 router.patch("/addFriend", addFriend);
 router.patch("/removeFriend", removeFriend);

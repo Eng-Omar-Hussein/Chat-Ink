@@ -6,8 +6,11 @@ import Logout from "../icons/log-out.png";
 import AccountPhoto from "../icons/account-photo.png";
 import "../Navbar/Navbar.css";
 import { NavLink, Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 function Navbar() {
+  const user = useSelector((state) => state.user.data);
+
   return (
     <div className="Nav">
       <nav className="navbar">
@@ -51,7 +54,7 @@ function Navbar() {
           <NavLink to="/accountSettings" className="nav-link px-4 fw-bold link">
             <div className="Profile">
               <img
-                src={AccountPhoto}
+                src={user.profilePic}
                 alt="user-profile"
                 className="profile-img"
               />

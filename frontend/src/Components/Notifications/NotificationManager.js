@@ -1,14 +1,34 @@
-import defaultPic from "../../Assets/defaultPic.png";
-const NotificationManager = (props) => {
-  const {
-    name,
-    picture,
-    request,
-    acceptRequest,
-    viewMessage,
-    rejectRequest,
-    user,
-  } = props;
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+
+import {
+  acceptFriendRequest,
+  deleteNotification,
+} from "../../redux/friendsSlice";
+const NotificationManager = ({
+  name,
+  picture,
+  request,
+  acceptRequest,
+  viewMessage,
+  rejectRequest,
+  user,
+  id,
+  notificationId,
+}) => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const friends = useSelector((state) => state.friends);
+  const acceptFriend = (id) => {
+    let deleted;
+    const acc = dispatch(acceptFriendRequest(id));
+    if (acc) {
+      deleted = dispatch(deleteNotification(notificationId));
+    }
+    if (deleted) {
+      navigate(`/MainPage`);
+    }
+  };
   return (
     <div className="notification" style={{ paddingTop: "30px" }}>
       <div
@@ -76,9 +96,7 @@ const NotificationManager = (props) => {
               <>
                 <button
                   className="btn btn-outline-secondary my-3"
-                  onClick={() =>
-                    request ? acceptRequest(user) : viewMessage(user)
-                  }
+                  onClick={() => acceptFriend(id)}
                   style={{
                     cursor: "pointer",
                     color: "white",
