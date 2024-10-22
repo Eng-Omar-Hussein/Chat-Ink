@@ -58,9 +58,9 @@ function ChatList({ onChatClick }) {
   const groups = conversations.filter((con) => con.participants.length !== 2);
   const chat121 = conversations.filter((con) => con.participants.length === 2);
 
-  const filteredChats = conversations.filter((chat) =>
-    chat.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // const filteredChats = conversations.filter((chat) =>
+  //   chat.name.toLowerCase().includes(searchTerm.toLowerCase())
+  // );
 
   return (
     <div>
@@ -120,7 +120,7 @@ function ChatList({ onChatClick }) {
           ))}
         </div>
       </div>
-      <div className="chats-container">
+      {/* <div className="chats-container">
         {filteredChats.map((chat) => (
           <div
             className="chat-item"
@@ -138,7 +138,7 @@ function ChatList({ onChatClick }) {
             </div>
           </div>
         ))}
-      </div>
+      </div> */}
     </div>
   );
 }

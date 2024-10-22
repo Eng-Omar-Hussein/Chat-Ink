@@ -13,7 +13,7 @@ export const fetchChats = createAsyncThunk("chat/fetchChats", async () => {
 
   const response = await axios.get("http://localhost:5000/api/chats/user", {
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: token,
     },
   });
 
@@ -30,7 +30,7 @@ export const fetchLoggedInUser = createAsyncThunk(
     }
     const response = await axios.get("http://localhost:5000/api/user", {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: token,
       },
     });
 

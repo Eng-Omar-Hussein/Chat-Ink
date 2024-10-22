@@ -9,11 +9,13 @@ function Form() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
-  const err = true;
+  const err = useSelector((state) => state.user.error);
   const handleLogin = async (event) => {
     event.preventDefault();
     const login = await dispatch(loginUser({ email, password }));
     if (login.payload.data) navigate("/MainPage");
+    setEmail("");
+    setPassword("");
   };
   return (
     <form

@@ -123,6 +123,7 @@ export const userSlice = createSlice({
         state.token = null;
         state.user = null;
         state.message = action.payload.message;
+        console.log(action.payload);
         // localStorage.clear();
       });
 

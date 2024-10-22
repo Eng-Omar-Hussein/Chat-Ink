@@ -7,10 +7,10 @@ import "../Navbar/Navbar.css";
 import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-const Navbar = (props) => {
+const Navbar = () => {
   const user = useSelector((state) => state.user.data);
-  console.log(user);
-  const { notificationRead } = props;
+  const notification = useSelector((state) => state.friends.notifications);
+  console.log(notification);
   return (
     <div className="Nav">
       <nav className="navbar">
@@ -36,17 +36,17 @@ const Navbar = (props) => {
                 alt="Notifications"
                 className="icon"
                 style={
-                  notificationRead
+                  notification
                     ? {}
                     : {
                         position: "relative",
-                        animation: notificationRead
+                        animation: notification
                           ? "none"
                           : "shake 0.5s linear infinite",
                       }
                 }
               />
-              <span style={notificationRead ? {} : { color: "#6FB1B6" }}>
+              <span style={notification ? {} : { color: "#6FB1B6" }}>
                 Notifications
               </span>
               <style>

@@ -10,7 +10,7 @@ export const uploadMessages = createAsyncThunk(
       { content },
       {
         headers: {
-          Authorization: `Bearer ${token}`, // Include the token in the Authorization header
+          Authorization: token, // Include the token in the Authorization header
         },
       }
     );
