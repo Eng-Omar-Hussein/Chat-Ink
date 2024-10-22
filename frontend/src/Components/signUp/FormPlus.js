@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { registerUser } from "../../redux/userSlice";
 import "react-toastify/dist/ReactToastify.css"; //+
 import styles from "./FormPlusStyle.module.css";
@@ -8,6 +8,8 @@ import Swal from "sweetalert2";
 import Toastify from "toastify-js";
 import "toastify-js/src/toastify.css";
 export default function FormPlus() {
+  const error = useSelector((state) => state.user.error);
+
   const [FirstName, setFirstName] = useState("");
   const [LastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -60,16 +62,14 @@ export default function FormPlus() {
         lastName: LastName,
       })
     );
-    if (newUser) {
-      Swal.fire({
-        title: "Account Created Successfully!",
-        text: "Jump in and start chatting with your friends.",
-        icon: "success",
-        timer: 3000,
-        showConfirmButton: false,
-      });
-      navigate("/");
-    }
+    // console.log(error);
+    // if (newUser && !error) {
+
+    //   navigate("/");
+    // }
+    // if (error) {
+    //   window.alert("Error: " + error);
+    // }
   };
 
   return (
@@ -77,7 +77,8 @@ export default function FormPlus() {
       onSubmit={handleSignUp}
       className="d-flex flex-column align-items-center col-10 col-sm-8 col-md-7 col-lg-6 col-xl-5 col-xxl-4"
     >
-      {/* First Name Input */}
+      {error && <div>error</div>}
+      {!error && <></>}
       <div className="form-group col-12 my-3">
         <label htmlFor="exampleInputName1" className={styles.sr_only}>
           First Name

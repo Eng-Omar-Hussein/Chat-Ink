@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import {
   acceptFriendRequest,
   deleteNotification,
+  getFriendsRequest,
 } from "../../redux/friendsSlice";
 const NotificationManager = ({
   name,
@@ -24,17 +25,24 @@ const NotificationManager = ({
   const acceptFriend = async (id) => {
     let deleted;
     const acc = await dispatch(acceptFriendRequest(id));
+
     if (acc) {
       deleted = await dispatch(deleteNotification(notificationId));
     }
     if (deleted) {
-      navigate(`/MainPage`);
+      const notif = await dispatch(getFriendsRequest());
+      if (notif) {
+        navigate(`/MainPage`);
+      }
     }
   };
   const rejectFriend = async (id) => {
     let deleted = await dispatch(deleteNotification(notificationId));
     if (deleted) {
-      navigate(`/MainPage`);
+      const notif = await dispatch(getFriendsRequest());
+      if (notif) {
+        navigate(`/MainPage`);
+      }
     }
   };
   return (

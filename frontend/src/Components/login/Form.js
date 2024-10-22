@@ -3,6 +3,7 @@ import styles from "./FormStyle.module.css";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../../redux/userSlice";
+import { getFriendsRequest } from "../../redux/friendsSlice";
 
 function Form() {
   const navigate = useNavigate();
@@ -13,7 +14,12 @@ function Form() {
   const handleLogin = async (event) => {
     event.preventDefault();
     const login = await dispatch(loginUser({ email, password }));
-    if (login.payload.data) navigate("/MainPage");
+    if (login.payload.data) {
+      const notif = await dispatch(getFriendsRequest());
+      if (notif) {
+        navigate("/MainPage");
+      }
+    }
     setEmail("");
     setPassword("");
   };

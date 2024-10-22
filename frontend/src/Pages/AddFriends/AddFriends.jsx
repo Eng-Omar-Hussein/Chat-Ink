@@ -7,8 +7,9 @@ import { useEffect, useState } from "react";
 
 export default function AddFrineds() {
   const [searchTerm, setSearchTerm] = useState("");
-
-  const notfriends = useSelector((state) => state.friends.data);
+  const [notFriends, setNotfriends] = useState(
+    useSelector((state) => state.friends.data)
+  );
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(updateUser());
@@ -19,12 +20,14 @@ export default function AddFrineds() {
       <div className="d-flex justify-content-end mt-5">
         <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
       </div>
-      {notfriends?.map((user) => {
+      {notFriends?.map((user) => {
         return (
           <AddUser
             name={user.firstName + " " + user.lastName}
             img={user.profilePic}
             id={user._id}
+            friends={notFriends}
+            setFriends={setNotfriends}
           ></AddUser>
         );
       })}

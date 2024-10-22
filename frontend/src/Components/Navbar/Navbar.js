@@ -36,17 +36,24 @@ const Navbar = () => {
                 alt="Notifications"
                 className="icon"
                 style={
-                  notification
-                    ? {}
-                    : {
+                  notification && notification.length > 0
+                    ? {
                         position: "relative",
-                        animation: notification
-                          ? "none"
-                          : "shake 0.5s linear infinite",
+                        animation:
+                          notification && notification.length > 0
+                            ? "shake 0.5s linear infinite"
+                            : "none",
                       }
+                    : {}
                 }
               />
-              <span style={notification ? {} : { color: "#6FB1B6" }}>
+              <span
+                style={
+                  notification && notification.length > 0
+                    ? { color: "#6FB1B6" }
+                    : {}
+                }
+              >
                 Notifications
               </span>
               <style>
