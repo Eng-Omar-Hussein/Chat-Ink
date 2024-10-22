@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { registerUser } from "../../redux/userSlice";
 import "react-toastify/dist/ReactToastify.css"; //+
@@ -7,17 +7,21 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import Toastify from "toastify-js";
 import "toastify-js/src/toastify.css";
+import ErrorMessages from "../alerts/ErrorMessage";
+import ValidationMessage from "../alerts/ValidationMessage";
 export default function FormPlus() {
-  const error = useSelector((state) => state.user.error);
+  const errMessage = useSelector((state) => state.user.message);
 
   const [FirstName, setFirstName] = useState("");
   const [LastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [ConfirmPassword, setConfirmPassword] = useState("");
+  const [isSumpited, setIsSumpited] = useState(false);
+  const [errors, setErrors] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const handleSignUp = (event) => {
+  const handleSignUp = async (event) => {
     event.preventDefault();
 
     if (password !== ConfirmPassword) {
@@ -54,7 +58,7 @@ export default function FormPlus() {
       }).showToast();
       return;
     }
-    const newUser = dispatch(
+    const newUser = await dispatch(
       registerUser({
         email,
         password,
@@ -62,14 +66,17 @@ export default function FormPlus() {
         lastName: LastName,
       })
     );
-    // console.log(error);
-    // if (newUser && !error) {
-
-    //   navigate("/");
-    // }
-    // if (error) {
-    //   window.alert("Error: " + error);
-    // }
+    if (newUser.type === "user/register/rejected") {
+      setErrors(true);
+    } else {
+      setIsSumpited(true);
+    }
+    setEmail("");
+    setPassword("");
+    setConfirmPassword("");
+    setFirstName("");
+    setLastName("");
+    setEmail("");
   };
 
   return (
@@ -77,8 +84,8 @@ export default function FormPlus() {
       onSubmit={handleSignUp}
       className="d-flex flex-column align-items-center col-10 col-sm-8 col-md-7 col-lg-6 col-xl-5 col-xxl-4"
     >
-      {error && <div>error</div>}
-      {!error && <></>}
+      {errors && <ErrorMessages error={errMessage} setErrors={setErrors} />}
+      {isSumpited && !errors && <ValidationMessage />}
       <div className="form-group col-12 my-3">
         <label htmlFor="exampleInputName1" className={styles.sr_only}>
           First Name

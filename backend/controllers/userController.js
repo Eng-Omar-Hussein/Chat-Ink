@@ -69,7 +69,7 @@ exports.signUp = async (req, res) => {
   } catch (error) {
     return res
       .status(400)
-      .json({ message: "Bad request ", error: error.message });
+      .json({ error: "Bad request ", message: error.message });
   }
 };
 

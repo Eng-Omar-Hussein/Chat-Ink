@@ -119,7 +119,7 @@ export default function App({ setCurrentPage, setParticipant, participant }) {
   const user = useSelector((state) => state.user.data);
   const [friends, setFriends] = useState(user.friends);
   const goToCreateGroup = () => {
-    if (friends?.length > 0) {
+    if (participant?.length > 1) {
       setCurrentPage(2);
     }
   };
@@ -131,7 +131,7 @@ export default function App({ setCurrentPage, setParticipant, participant }) {
           <SearchBar className={"col-12"} />
         </div>
       </div>
-      {friends?.length > 0 ? (
+      {user.friends?.length > 1 ? (
         friends.map((user) => {
           return (
             <AddUser
@@ -148,13 +148,13 @@ export default function App({ setCurrentPage, setParticipant, participant }) {
           );
         })
       ) : (
-        <p className="mt-4">Add users to create a group</p>
+        <p className="mt-4">Add at least 2 Friends to create a group</p>
       )}
       <div className="d-flex ">
         <button
           className={`${styles.btn} ms-auto`}
           onClick={goToCreateGroup}
-          disabled={friends?.length === 0}
+          disabled={participant?.length < 2}
         >
           Next
         </button>
