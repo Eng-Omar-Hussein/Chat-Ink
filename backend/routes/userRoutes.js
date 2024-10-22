@@ -5,7 +5,7 @@ const {
   removeFriend,
   userInfo,
   getNonFriends,
-} = require("../controllers/userController");
+} = require("../controllers/userController.js");
 
 const router = express.Router();
 

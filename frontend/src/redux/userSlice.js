@@ -111,6 +111,7 @@ export const userSlice = createSlice({
         // localStorage.clear();
       })
       .addCase(loginUser.fulfilled, (state, action) => {
+        console.log(action.payload);
         state.loading = false;
         state.message = action.payload.data.message;
         state.data = action.payload.data.data;

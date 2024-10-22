@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 
 const Navbar = (props) => {
   const user = useSelector((state) => state.user.data);
+  console.log(user);
   const { notificationRead } = props;
   return (
     <div className="Nav">

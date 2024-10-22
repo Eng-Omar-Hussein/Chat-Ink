@@ -21,12 +21,18 @@ const NotificationManager = ({
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const friends = useSelector((state) => state.friends);
-  const acceptFriend = (id) => {
+  const acceptFriend = async (id) => {
     let deleted;
-    const acc = dispatch(acceptFriendRequest(id));
+    const acc = await dispatch(acceptFriendRequest(id));
     if (acc) {
-      deleted = dispatch(deleteNotification(notificationId));
+      deleted = await dispatch(deleteNotification(notificationId));
     }
+    if (deleted) {
+      navigate(`/MainPage`);
+    }
+  };
+  const rejectFriend = async (id) => {
+    let deleted = await dispatch(deleteNotification(notificationId));
     if (deleted) {
       navigate(`/MainPage`);
     }
@@ -123,7 +129,7 @@ const NotificationManager = ({
 
                 <button
                   className="btn btn-outline-secondary my-3 reject-btn"
-                  onClick={() => rejectRequest(user)}
+                  onClick={rejectFriend}
                   style={{
                     cursor: "pointer",
                     color: "white",

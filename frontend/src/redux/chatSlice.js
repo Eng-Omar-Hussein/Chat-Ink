@@ -1,16 +1,17 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
 
 // Async thunk to fetch chats
-const token = localStorage.getItem('token'); // Fetch token inside the thunk
-  if (!token) {
-    throw new Error('No authentication token found'); // Handle case where token is missing
-  }
-export const fetchChats = createAsyncThunk('chat/fetchChats', async () => {
-  // Simulate a delay for testing loading state
-  await new Promise(resolve => setTimeout(resolve, 500));
 
-  const response = await axios.get('http://localhost:5000/api/chats/user', {
+export const fetchChats = createAsyncThunk("chat/fetchChats", async () => {
+  // Simulate a delay for testing loading state
+  const token = localStorage.getItem("authToken"); // Fetch token inside the thunk
+  if (!token) {
+    throw new Error("No authentication token found"); // Handle case where token is missing
+  }
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
+  const response = await axios.get("http://localhost:5000/api/chats/user", {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -20,24 +21,30 @@ export const fetchChats = createAsyncThunk('chat/fetchChats', async () => {
 });
 
 // Async thunk to fetch logged-in user details
-export const fetchLoggedInUser = createAsyncThunk('chat/fetchLoggedInUser', async () => {
+export const fetchLoggedInUser = createAsyncThunk(
+  "chat/fetchLoggedInUser",
+  async () => {
+    const token = localStorage.getItem("authToken"); // Fetch token inside the thunk
+    if (!token) {
+      throw new Error("No authentication token found"); // Handle case where token is missing
+    }
+    const response = await axios.get("http://localhost:5000/api/user", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-  const response = await axios.get('http://localhost:5000/api/user', {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  return response.data; // Assuming the response returns user details
-});
+    return response.data; // Assuming the response returns user details
+  }
+);
 
 const chatSlice = createSlice({
-  name: 'chat',
+  name: "chat",
   initialState: {
     loggedInUser: null,
     chats: [],
-    chatStatus: 'idle', // 'idle' | 'loading' | 'succeeded' | 'failed'
-    userStatus: 'idle', // Separate status for fetching user data
+    chatStatus: "idle", // 'idle' | 'loading' | 'succeeded' | 'failed'
+    userStatus: "idle", // Separate status for fetching user data
     error: null,
   },
   reducers: {},
@@ -45,27 +52,27 @@ const chatSlice = createSlice({
     builder
       // Handle fetchChats thunk lifecycle
       .addCase(fetchChats.pending, (state) => {
-        state.chatStatus = 'loading';
+        state.chatStatus = "loading";
       })
       .addCase(fetchChats.fulfilled, (state, action) => {
-        state.chatStatus = 'succeeded';
+        state.chatStatus = "succeeded";
         state.chats = action.payload; // Store chats in state
       })
       .addCase(fetchChats.rejected, (state, action) => {
-        state.chatStatus = 'failed';
+        state.chatStatus = "failed";
         state.error = action.error.message;
       })
 
       // Handle fetchLoggedInUser thunk lifecycle
       .addCase(fetchLoggedInUser.pending, (state) => {
-        state.userStatus = 'loading';
+        state.userStatus = "loading";
       })
       .addCase(fetchLoggedInUser.fulfilled, (state, action) => {
-        state.userStatus = 'succeeded';
+        state.userStatus = "succeeded";
         state.loggedInUser = action.payload; // Store user details in state
       })
       .addCase(fetchLoggedInUser.rejected, (state, action) => {
-        state.userStatus = 'failed';
+        state.userStatus = "failed";
         state.error = action.error.message;
       });
   },

@@ -10,17 +10,15 @@ import CreateGroup from "./Pages/CreateGroup/CreateGroup";
 import AddFriends from "./Pages/AddFriends/AddFriends";
 import Navbar from "./Components/Navbar/Navbar";
 import GroupParticipantsListPage from "../src/Pages/GroupParticipantsListPage";
-import CreateGroupSecondPage from "../src/Pages/CreateGroup/SecondPage/SecondPage"
-import CreateGroupThirdPage from "../src/Pages/CreateGroup/ThirdPage/ThirdPage"
+import CreateGroupSecondPage from "../src/Pages/CreateGroup/SecondPage/SecondPage";
+import CreateGroupThirdPage from "../src/Pages/CreateGroup/ThirdPage/ThirdPage";
 import NotFoundPage from "./Pages/NotFoundPage";
 import { Provider } from "react-redux";
-
+import { store } from "./redux/store";
 
 function App() {
   return (
-
-        <Provider store={store}>
-
+    <Provider store={store}>
       <Router>
         <Routes>
           <Route path="/" element={<Login />} />
@@ -84,8 +82,8 @@ function App() {
             path="/groupParticipantsListPage"
             element={
               <>
-               <Navbar NotificationRead={true}></Navbar>
-              <GroupParticipantsListPage />
+                <Navbar NotificationRead={true}></Navbar>
+                <GroupParticipantsListPage />
               </>
             }
           />
@@ -94,8 +92,8 @@ function App() {
             path="/createGroupSecondPage"
             element={
               <>
-               <Navbar NotificationRead={true}></Navbar>
-              <CreateGroupSecondPage/>
+                <Navbar NotificationRead={true}></Navbar>
+                <CreateGroupSecondPage />
               </>
             }
           />
@@ -104,14 +102,13 @@ function App() {
             path="/createGroupThirdPage"
             element={
               <>
-               <Navbar NotificationRead={true}></Navbar>
-              <CreateGroupThirdPage/>
+                <Navbar NotificationRead={true}></Navbar>
+                <CreateGroupThirdPage />
               </>
             }
-          />  
+          />
 
-        <Route path="*" element={<NotFoundPage />} />
-
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Router>
     </Provider>

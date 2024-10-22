@@ -4,9 +4,9 @@ import { registerUser } from "../../redux/userSlice";
 import "react-toastify/dist/ReactToastify.css"; //+
 import styles from "./FormPlusStyle.module.css";
 import { useNavigate } from "react-router-dom";
-import { Toastify } from "react-toastify";
 import Swal from "sweetalert2";
-
+import Toastify from "toastify-js";
+import "toastify-js/src/toastify.css";
 export default function FormPlus() {
   const [FirstName, setFirstName] = useState("");
   const [LastName, setLastName] = useState("");
