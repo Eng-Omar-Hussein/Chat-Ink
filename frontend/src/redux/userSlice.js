@@ -24,6 +24,7 @@ export const registerUser = createAsyncThunk(
       const data = await response.json();
 
       if (response.status !== 201 || !response.ok) {
+        console.log("object");
         return rejectWithValue(data);
       } else {
         return { data };
@@ -133,7 +134,14 @@ export const userSlice = createSlice({
         state.error = null;
       })
       .addCase(registerUser.fulfilled, (state, action) => {})
-      .addCase(registerUser.rejected, (state, action) => {});
+      .addCase(registerUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = true;
+        state.token = null;
+        state.user = null;
+        state.message = action.payload.message;
+        console.log(action.payload);
+      });
     builder
       .addCase(updateUser.pending, (state) => {
         state.loading = true;

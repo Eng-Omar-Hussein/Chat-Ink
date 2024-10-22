@@ -35,9 +35,7 @@ const text = { fontSize: "32", fontWeight: "700", color: "black" };
 function Notifications() {
   const dispatch = useDispatch();
   const notifications = useSelector((state) => state.friends.notifications);
-  useEffect(() => {
-    dispatch(getFriendsRequest());
-  }, []);
+
   // const [notification, setNotifications] = useState(notifications);
   // const [successMessage, setSuccessMessage] = useState("");
 
