@@ -37,20 +37,27 @@ app.use("/api/user", authMiddleware, userRoutes);
 io.on("connection", (socket) => {
   console.log("User connected:", socket.id);
 
-  // Join Room event
   socket.on("joinRoom", (roomName) => {
     socket.join(roomName);
     console.log(`User ${socket.id} joined room: ${roomName}`);
   });
 
-  // Receive message and broadcast it to the room
+  socket.on("typing", ({ roomName, user }) => {
+    socket.to(roomName).emit("userTyping", { user });
+    console.log(`User ${user.firstName} is typing in room: ${roomName}`);
+  });
+
+  socket.on("stoppedTyping", ({ roomName, user }) => {
+    socket.to(roomName).emit("userStoppedTyping", { user });
+    console.log(`User ${user.firstName} stopped typing in room: ${roomName}`);
+  });
+
   socket.on("sendMessage", (data) => {
     const { _id, content } = data;
     io.to(_id).emit("receiveMessage", data);
     console.log(`Message from ${socket.id} in room ${_id}: ${content}`);
   });
 
-  // Handle disconnect
   socket.on("disconnect", () => {
     console.log("User disconnected:", socket.id);
   });

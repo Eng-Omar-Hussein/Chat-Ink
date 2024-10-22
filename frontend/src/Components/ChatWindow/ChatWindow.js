@@ -17,7 +17,8 @@ function ChatWindow({ name, profilePicture, onBackClick, roomName, chats }) {
   const loggedInUser = useSelector((state) => state.chat.loggedInUser);
   const loggedInUserID = loggedInUser ? loggedInUser._id : null;
   const messages = useSelector((state) => state.room.messages);
-  console.log(chats)
+  const [isTyping, setIsTyping] = useState(false); // New state for typing
+  const [typingUser, setTypingUser] = useState(''); // Tracks the user who is typing
   const formatTimeToHours = (timeString) => {
     const date = new Date(timeString);
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
@@ -95,6 +96,43 @@ function ChatWindow({ name, profilePicture, onBackClick, roomName, chats }) {
     dispatch(uploadMessages({ roomID: currentRoom, content: message }));
 
   };
+
+  // Emit typing event when user starts typing
+  const handleTyping = () => {
+    if (!isTyping) {
+      socket.emit('typing', { roomName, user: loggedInUser});
+      setIsTyping(true);
+    }
+  };
+
+  // Emit stopped typing event after a delay
+  const handleStoppedTyping = () => {
+    setTimeout(() => {
+      socket.emit('stoppedTyping', { roomName, user: loggedInUser });
+      setIsTyping(false);
+    }, 3000); // 3 seconds delay after stopping typing
+  };
+
+
+  // Listen for typing events from the server
+  useEffect(() => {
+    socket.on('userTyping', ({ user }) => {
+      if (user !== loggedInUser) {
+        setTypingUser(user);
+      }
+    });
+
+    socket.on('userStoppedTyping', ({ user }) => {
+      if (user !== loggedInUser) {
+        setTypingUser(''); // Clear typing indicator when they stop typing
+      }
+    });
+
+    return () => {
+      socket.off('userTyping');
+      socket.off('userStoppedTyping');
+    };
+  }, [loggedInUser]);
 
   // useEffect(() => {
   //   setMessages([]); // Clear messages when the chat changes
@@ -175,7 +213,7 @@ function ChatWindow({ name, profilePicture, onBackClick, roomName, chats }) {
           {warning}
         </div>
       )}
-
+      {}
       <div id="chat-box" className="border p-2 overflow-auto " style={{ borderRadius: '30px', height: '70vh', backgroundColor: '#f1f1f15d' }}>
         {/* Display messages */}
         {messages.map((msg, index) => (
@@ -186,10 +224,17 @@ function ChatWindow({ name, profilePicture, onBackClick, roomName, chats }) {
             <span className="message-time">{msg.time}</span> {/* Display timestamp */}
           </div>
         ))}
+         {/* Typing Indicator */}
+         {typingUser && (
+          <div className="received">
+            {typingUser._id === loggedInUserID ? 'Typing...' : `${typingUser.firstName} is typing...`}
+          </div>
+        )}
+        
         <div ref={chatEndRef} /> {/* Empty div to scroll to */}
       </div>
 
-      <MessageInputContainer onSend={handleSendMessage} />
+      <MessageInputContainer onSend={handleSendMessage} onTyping={handleTyping} onStoppedTyping={handleStoppedTyping}/>
     </div>
 
   );
