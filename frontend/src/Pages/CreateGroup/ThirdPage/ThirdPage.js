@@ -1,16 +1,19 @@
 import React, { useState } from "react";
 import styles from "./styles.module.css";
 import icon from "../../../Assets/R (2) 1.png";
-import groupImage from "../../../Assets/meeting-icon-30 1.png";
 import { useNavigate } from "react-router-dom";
+import { createGroup } from "../../../redux/groupSlice";
 
-export default function ThirdPage() {
-  const [image, setImage] = useState(groupImage);
+import { useDispatch, useSelector } from "react-redux";
+export default function ThirdPage({ participant }) {
+  const [image, setImage] = useState(
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR5z4mLY5q13A48Q4hwWK4Zq6B29GQ748heAg&s"
+  );
   const [groupName, setGroupName] = useState(""); // Ensure groupName state is defined
   const navigate = useNavigate();
   const [successMessage, setSuccessMessage] = useState("");
-
-
+  const [groupType, setGroupType] = useState("public");
+  const dispatch = useDispatch();
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -24,34 +27,56 @@ export default function ThirdPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    // Check if group name is provided
-    if (!groupName.trim()) {
-      alert("Please enter a group name.");
-      return;
-    }
+    let membersgroup = [];
+    console.log(participant);
+    participant.map((i) => {
+      i.map((member) => {
+        membersgroup.push(member._id);
+      });
+    });
+    const data = {
+      name: groupName,
+      photoURL: image,
+      members: membersgroup,
+      visibility: groupType == "public",
+    };
+    dispatch(createGroup(data));
+    // // Check if group name is provided
+    // if (!groupName.trim()) {
+    //   alert("Please enter a group name.");
+    //   return;
+    // }
 
-    createGroup();
+    // createGroup();
   };
 
-  const createGroup = () => {
-    setSuccessMessage("You've successfully created the group");
-    setTimeout(() => setSuccessMessage(""), 2000);
-    setTimeout(() => navigate('/MainPage'), 3000);
-  };
+  // const createGroup = () => {
+  //   setSuccessMessage("You've successfully created the group");
+  //   setTimeout(() => setSuccessMessage(""), 2000);
+  //   setTimeout(() => navigate("/MainPage"), 3000);
+  // };
 
-
-
- return (
+  return (
     <form onSubmit={handleSubmit}>
-      <div className="container d-flex flex-column mb-2" style={{ height: "80vh", justifyContent: "center", padding: "0" }}>
-        
+      <div
+        className="container d-flex flex-column mb-2"
+        style={{ height: "80vh", justifyContent: "center", padding: "0" }}
+      >
         <div className="row align-items-center mt-6">
           <div className="col mt-2">
-            <label className="me-3 mt-n5 m-3" style={{ fontWeight: "bold", fontSize: "20px" }}>Group Picture</label>
+            <label
+              className="me-3 mt-n5 m-3"
+              style={{ fontWeight: "bold", fontSize: "20px" }}
+            >
+              Group Picture
+            </label>
           </div>
           <div className="d-flex align-items-center justify-content-center me-4 mb-5 mt-n1">
-            <img src={image} alt="Group" style={{ width: "110px", height: "110px" }} />
+            <img
+              src={image}
+              alt="Group"
+              style={{ width: "110px", height: "110px" }}
+            />
           </div>
         </div>
 
@@ -62,7 +87,10 @@ export default function ThirdPage() {
             style={{ display: "none" }}
             onChange={handleFileChange}
           />
-          <label htmlFor="file-input" className={`${styles.label} d-flex align-items-center ms-5`}>
+          <label
+            htmlFor="file-input"
+            className={`${styles.label} d-flex align-items-center ms-5`}
+          >
             <img
               src={icon}
               alt="Camera Icon"
@@ -74,7 +102,9 @@ export default function ThirdPage() {
         </div>
 
         <div className="mt-4 m-3">
-          <label style={{ fontWeight: "bold", fontSize: "20px" }}>Group Name</label>
+          <label style={{ fontWeight: "bold", fontSize: "20px" }}>
+            Group Name
+          </label>
           <input
             required
             type="text"
@@ -86,8 +116,15 @@ export default function ThirdPage() {
         </div>
 
         <div className="mt-3 m-3">
-          <label style={{ fontWeight: "bold", fontSize: "20px" }}>Group Type</label>
-          <select className={`col-12 ${styles.input}`} required>
+          <label style={{ fontWeight: "bold", fontSize: "20px" }}>
+            Group Type
+          </label>
+          <select
+            value={groupType}
+            onChange={(e) => setGroupType(e.target.value)}
+            className={`col-12 ${styles.input}`}
+            required
+          >
             <option value="public">Public</option>
             <option value="private">Private</option>
           </select>
@@ -111,5 +148,5 @@ export default function ThirdPage() {
         )}
       </div>
     </form>
-  ); 
+  );
 }

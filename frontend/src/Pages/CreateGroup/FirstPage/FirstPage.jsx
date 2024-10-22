@@ -51,24 +51,13 @@ import CardComponent from "../../../Components/Groups/CardComponent";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getPublicGroup } from "../../../redux/groupSlice";
-const PUBLICGROUPS = [
-  { groupName: "Cooking Group", groupPic: groupPic },
-  { groupName: "Reading Group", groupPic: groupPic },
-  { groupName: "Quran Group", groupPic: groupPic },
-  { groupName: "Praying Group", groupPic: groupPic },
-  { groupName: "Excercise Group", groupPic: groupPic },
-];
+
 //gets 4 random groups from the array
 
-export default function App() {
+export default function App({ setCurrentPage }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const groups = useSelector((state) => state.group);
-
-  useEffect(() => {
-    console.log("from useEffect");
-    dispatch(getPublicGroup());
-  }, []);
+  const groups = useSelector((state) => state.groups.groups);
 
   return (
     <div id="groups-container">
@@ -76,21 +65,22 @@ export default function App() {
 
       <div className="container mt-4">
         <div className="row">
-          {/* {0 !== 0 ? (
-            randomGroups.map((group, index) => (
+          {groups ? (
+            groups.map((group, index) => (
               <div
                 className="col-12 col-md-6 col-lg-4 mb-4 d-flex justify-content-center "
                 key={index}
               >
                 <CardComponent
-                  groupName={group.groupName}
-                  groupPic={group.groupPic}
+                  groupName={group.name}
+                  groupPic={group.photoURL}
+                  id={group._id}
                 />
               </div>
             ))
           ) : (
             <div className="col-12 text-center">No groups available.</div>
-          )} */}
+          )}
         </div>
       </div>
 
@@ -105,7 +95,7 @@ export default function App() {
           marginLeft: "25px",
         }}
         onClick={() => {
-          navigate("/createGroupSecondPage");
+          setCurrentPage(1);
         }}
       >
         Create your own group

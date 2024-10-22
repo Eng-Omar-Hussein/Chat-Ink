@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../../redux/userSlice";
 import { getFriendsRequest } from "../../redux/friendsSlice";
+import { getPublicGroup } from "../../redux/groupSlice";
 
 function Form() {
   const navigate = useNavigate();
@@ -16,7 +17,9 @@ function Form() {
     const login = await dispatch(loginUser({ email, password }));
     if (login.payload.data) {
       const notif = await dispatch(getFriendsRequest());
-      if (notif) {
+      const groups = await dispatch(getPublicGroup());
+
+      if (notif && groups) {
         navigate("/MainPage");
       }
     }

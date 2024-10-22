@@ -44,7 +44,7 @@ exports.getGroupsById = async (req, res) => {
 
 exports.createGroup = async (req, res) => {
   const { user, name, visibility, members, description, photoURL } = req.body;
-
+  console.log(name, visibility, members);
   if (!name || visibility === undefined || !members) {
     return res.status(400).json({
       error: "(name, visibility, and members are required)",
@@ -52,6 +52,7 @@ exports.createGroup = async (req, res) => {
   }
 
   try {
+    members.push(user);
     const chat = await new Chat({ participants: members }).save();
     const newGroup = new groups({
       admin: user,

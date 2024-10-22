@@ -53,53 +53,108 @@
 //     </div>
 //   );
 // }
-import { useState } from "react";
+// import { useState } from "react";
+// import AddUser from "../../../Components/AddUser/AddUser";
+// import styles from "./styles.module.css";
+// import user from "../../../Assets/Ellipse 308.png";
+// import SearchBar from "../../../Components/SearchBar/SearchBar";
+// import { useNavigate } from "react-router-dom";
+
+// const DUMMY_USERS = [
+//   { name: "Moaz", img: user },
+//   { name: "Omar", img: user },
+//   { name: "ibrahim", img: user },
+//   { name: "Ahmed", img: user },
+//   { name: "Ali", img: user },
+//   { name: "Rahma", img: user },
+//   { name: "Salma", img: user },
+// ];
+
+// export default function App() {
+//   const [searchTerm, setSearchTerm] = useState("");
+//   const navigate = useNavigate();
+//   const filteredUsers = DUMMY_USERS.filter((user) =>
+//     user.name.toLowerCase().includes(searchTerm.toLowerCase())
+//   );
+
+//   return (
+//     <div className="container col-12">
+//       <div className="d-flex justify-content-between align-items-center mt-5 col-12">
+//         <h2>Add group participants</h2>
+//         <div className="col-3">
+//           <SearchBar
+//             className={"col-12"}
+//             searchTerm={searchTerm}
+//             onSearchChange={setSearchTerm}
+//           />
+//         </div>
+//       </div>
+
+//       {filteredUsers.map((user) => (
+//         <AddUser key={user.name} name={user.name} img={user.img} />
+//       ))}
+
+//       <div className="d-flex mb-5">
+//         <button
+//           className={`${styles.btn} ms-auto`}
+//           onClick={() => {
+//             navigate("/createGroupThirdPage");
+//           }}
+//         >
+//           Next
+//         </button>
+//       </div>
+//     </div>
+//   );
+// }
+import { Link } from "react-router-dom"; // Import Link from react-router-dom//+
+import SearchBar from "../../../Components/SearchBar/SearchBar";
 import AddUser from "../../../Components/AddUser/AddUser";
 import styles from "./styles.module.css";
-import user from "../../../Assets/Ellipse 308.png";
-import SearchBar from "../../../Components/SearchBar/SearchBar";
-import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
-const DUMMY_USERS = [
-  { name: "Moaz", img: user },
-  { name: "Omar", img: user },
-  { name: "ibrahim", img: user },
-  { name: "Ahmed", img: user },
-  { name: "Ali", img: user },
-  { name: "Rahma", img: user },
-  { name: "Salma", img: user },
-];
+import { useState } from "react";
 
-export default function App() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const navigate = useNavigate();
-  const filteredUsers = DUMMY_USERS.filter((user) =>
-    user.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
+export default function App({ setCurrentPage, setParticipant, participant }) {
+  const user = useSelector((state) => state.user.data);
+  const [friends, setFriends] = useState(user.friends);
+  const goToCreateGroup = () => {
+    if (friends?.length > 0) {
+      setCurrentPage(2);
+    }
+  };
   return (
     <div className="container col-12">
-      <div className="d-flex justify-content-between align-items-center mt-5 col-12">
-        <h2>Add group participants</h2>
+      <div className="d-flex justify-content-between mt-5 c col-12">
+        <h2>Friends</h2>
         <div className="col-3">
-          <SearchBar
-            className={"col-12"}
-            searchTerm={searchTerm}
-            onSearchChange={setSearchTerm}
-          />
+          <SearchBar className={"col-12"} />
         </div>
       </div>
-
-      {filteredUsers.map((user) => (
-        <AddUser key={user.name} name={user.name} img={user.img} />
-      ))}
-
-      <div className="d-flex mb-5">
+      {friends?.length > 0 ? (
+        friends.map((user) => {
+          return (
+            <AddUser
+              key={user._id}
+              name={user.name}
+              img={user.profilePic}
+              id={user._id}
+              friends={friends}
+              setFriends={setFriends}
+              setParticipant={setParticipant}
+              participant={participant}
+              group={true}
+            />
+          );
+        })
+      ) : (
+        <p className="mt-4">Add users to create a group</p>
+      )}
+      <div className="d-flex ">
         <button
           className={`${styles.btn} ms-auto`}
-          onClick={() => {
-            navigate("/createGroupThirdPage");
-          }}
+          onClick={goToCreateGroup}
+          disabled={friends?.length === 0}
         >
           Next
         </button>

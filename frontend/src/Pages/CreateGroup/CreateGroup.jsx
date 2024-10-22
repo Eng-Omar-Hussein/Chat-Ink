@@ -9,11 +9,7 @@ export default function App() {
   return (
     <div>
       {currentPage === 0 && (
-        <FirstPage
-          setCurrentPage={setCurrentPage}
-          setParticipant={setParticipant}
-          participant={participant}
-        ></FirstPage>
+        <FirstPage setCurrentPage={setCurrentPage}></FirstPage>
       )}
 
       {currentPage === 1 && (
