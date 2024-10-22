@@ -58,7 +58,6 @@ export default function App({ setCurrentPage }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const groups = useSelector((state) => state.groups.groups);
-
   return (
     <div id="groups-container">
       <h2 className="m-4">Public Groups</h2>

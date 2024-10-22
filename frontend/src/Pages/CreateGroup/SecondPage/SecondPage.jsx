@@ -125,11 +125,12 @@ export default function App({ setCurrentPage, setParticipant, participant }) {
       setCurrentPage(2);
     }
   };
-  const filtered = friends?.filter((user) => {
-    const fullName = `${user.name}`.toLowerCase();
-    return fullName.includes(searchTerm.toLowerCase());
-  });
-  console.log(filtered);
+  // const filtered = friends?.filter((user) => {
+  //   const fullName = `${user.name}`.toLowerCase();
+  //   return fullName.includes(searchTerm.toLowerCase());
+  // });
+  // console.log(filtered);
+  console.log(user);
   return (
     <div className="container col-12">
       <div className="d-flex justify-content-between mt-5 c col-12">
@@ -138,8 +139,8 @@ export default function App({ setCurrentPage, setParticipant, participant }) {
           <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
         </div>
       </div>
-      {filtered?.length > 1 ? (
-        filtered.map((user) => {
+      {user.friends?.length > 1 ? (
+        friends.map((user) => {
           return (
             <AddUser
               key={user._id}
