@@ -1,10 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  error: null,
+  error: false,
   data: null,
   loading: false,
   message: "",
+  auth: false,
 };
 export const registerUser = createAsyncThunk(
   "user/register",
@@ -97,11 +98,14 @@ export const userSlice = createSlice({
     },
     register: (state, action) => {},
     logout: (state) => {
+      console.log("---------from logged out--------------");
       state.token = null;
-      state.error = null;
+      state.error = false;
       state.data = null;
+      state.auth = false;
       state.loading = false;
       state.message = "";
+      localStorage.removeItem("authToken");
     },
   },
   extraReducers: (builder) => {
@@ -116,6 +120,7 @@ export const userSlice = createSlice({
         state.loading = false;
         state.message = action.payload.data.message;
         state.data = action.payload.data.data;
+        state.auth = true;
         localStorage.setItem("authToken", action.payload.data.token);
       })
       .addCase(loginUser.rejected, (state, action) => {
@@ -133,7 +138,12 @@ export const userSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(registerUser.fulfilled, (state, action) => {})
+      .addCase(registerUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.message = action.payload.message;
+        state.error = false;
+        state.error = false;
+      })
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
         state.error = true;
@@ -141,6 +151,7 @@ export const userSlice = createSlice({
         state.user = null;
         state.message = action.payload.message;
         console.log(action.payload);
+        console.log(state.message);
       });
     builder
       .addCase(updateUser.pending, (state) => {

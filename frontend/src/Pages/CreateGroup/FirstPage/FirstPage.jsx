@@ -50,7 +50,7 @@ import groupPic from "../../../Components/icons/group.png";
 import CardComponent from "../../../Components/Groups/CardComponent";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getPublicGroup } from "../../../redux/groupSlice";
+import { joinToGroup } from "../../../redux/groupSlice";
 
 //gets 4 random groups from the array
 

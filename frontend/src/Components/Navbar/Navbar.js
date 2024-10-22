@@ -4,13 +4,19 @@ import Notifications from "../icons/Notifications.png";
 import CreateGroup from "../icons/create_group.png";
 import Logout from "../icons/log-out.png";
 import "../Navbar/Navbar.css";
-import { NavLink } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../../redux/userSlice";
 
 const Navbar = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const user = useSelector((state) => state.user.data);
   const notification = useSelector((state) => state.friends.notifications);
-  console.log(notification);
+  const handelLogout = () => {
+    dispatch(logout());
+    navigate("/");
+  };
   return (
     <div className="Nav">
       <nav className="navbar">
@@ -81,7 +87,7 @@ const Navbar = () => {
             </div>
           </NavLink>
 
-          <div className="logout fw-bold">
+          <div className="logout fw-bold" onClick={handelLogout}>
             <img src={Logout} alt="log-out" className="icon" />
             <span>Logout</span>
           </div>

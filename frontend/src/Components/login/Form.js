@@ -23,6 +23,7 @@ function Form() {
         navigate("/MainPage");
       }
     }
+
     setEmail("");
     setPassword("");
   };

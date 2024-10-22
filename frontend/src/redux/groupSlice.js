@@ -60,6 +60,36 @@ export const createGroup = createAsyncThunk(
     }
   }
 );
+export const joinToGroup = createAsyncThunk(
+  "groups/joinToGroup",
+  async ({ ID, userID }, { rejectWithValue }) => {
+    try {
+      console.log("object");
+      console.log(ID, userID);
+      const response = await fetch(
+        `http://localhost:5000/api/group/addUser/${ID}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: localStorage.getItem("authToken"),
+          },
+          body: JSON.stringify({ userId: userID }),
+        }
+      );
+      const data = await response.json();
+      console.log(data);
+      console.log("data from get join gorup ", data);
+      if (response.status !== 201 && response.status !== 200 && !response.ok) {
+        return rejectWithValue(data);
+      } else {
+        return data;
+      }
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
 
 export const groupSlice = createSlice({
   name: "groups",
@@ -111,6 +141,16 @@ export const groupSlice = createSlice({
         state.user = null;
         state.message = action.payload.message;
         console.log("from reject state");
+      });
+    builder
+      .addCase(joinToGroup.pending, (state) => {
+        console.log("from pending state");
+      })
+      .addCase(joinToGroup.fulfilled, (state, action) => {
+        console.log("from fulfilled state", action.payload);
+      })
+      .addCase(joinToGroup.rejected, (state, action) => {
+        console.log("from reject state", action.payload);
       });
   },
 });

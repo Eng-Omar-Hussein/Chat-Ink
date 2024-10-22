@@ -16,7 +16,7 @@ export default function AddUser({
   const dispatch = useDispatch();
   const handleAddFriend = () => {
     dispatch(sendFriendRequest(id));
-    setFriends(friends.filter((friend) => friend._id !== id));
+    setFriends(friends?.filter((friend) => friend._id !== id));
   };
   const handelAddParticipant = () => {
     let newParticipants = friends.filter((friend) => friend._id === id);

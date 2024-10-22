@@ -8,10 +8,10 @@ import { useEffect, useState } from "react";
 export default function AddFrineds() {
   const [searchTerm, setSearchTerm] = useState("");
 
-  const [notfriends,setNotFriends] = useState(
+  const [notfriends, setNotFriends] = useState(
     useSelector((state) => state.friends.data)
   );
-   
+
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(updateUser());
@@ -21,8 +21,6 @@ export default function AddFrineds() {
     const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
     return fullName.includes(searchTerm.toLowerCase());
   });
-
-
   return (
     <div className="container">
       <div className="d-flex justify-content-end mt-5">
@@ -34,6 +32,8 @@ export default function AddFrineds() {
             name={user.firstName + " " + user.lastName}
             img={user.profilePic}
             id={user._id}
+            friends={notfriends}
+            setFriends={setNotFriends}
           ></AddUser>
         );
       })}

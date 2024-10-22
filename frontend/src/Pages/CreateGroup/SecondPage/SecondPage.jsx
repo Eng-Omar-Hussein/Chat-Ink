@@ -118,21 +118,28 @@ import { useState } from "react";
 export default function App({ setCurrentPage, setParticipant, participant }) {
   const user = useSelector((state) => state.user.data);
   const [friends, setFriends] = useState(user.friends);
+  const [searchTerm, setSearchTerm] = useState("");
+
   const goToCreateGroup = () => {
-    if (friends?.length > 0) {
+    if (participant?.length > 1) {
       setCurrentPage(2);
     }
   };
+  const filtered = friends?.filter((user) => {
+    const fullName = `${user.name}`.toLowerCase();
+    return fullName.includes(searchTerm.toLowerCase());
+  });
+  console.log(filtered);
   return (
     <div className="container col-12">
       <div className="d-flex justify-content-between mt-5 c col-12">
         <h2>Friends</h2>
         <div className="col-3">
-          <SearchBar className={"col-12"} />
+          <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
         </div>
       </div>
-      {friends?.length > 0 ? (
-        friends.map((user) => {
+      {filtered?.length > 1 ? (
+        filtered.map((user) => {
           return (
             <AddUser
               key={user._id}
@@ -148,13 +155,13 @@ export default function App({ setCurrentPage, setParticipant, participant }) {
           );
         })
       ) : (
-        <p className="mt-4">Add users to create a group</p>
+        <p className="mt-4">Add at least 2 Friends to create a group</p>
       )}
       <div className="d-flex ">
         <button
           className={`${styles.btn} ms-auto`}
           onClick={goToCreateGroup}
-          disabled={friends?.length === 0}
+          disabled={participant?.length < 2}
         >
           Next
         </button>
