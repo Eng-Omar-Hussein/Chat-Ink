@@ -206,3 +206,22 @@ exports.getAllUsersInGroup = async (req, res) => {
       .json({ error: "An error occurred", errormessage: error.message });
   }
 };
+exports.getGroupByChatId = async (req, res) => {
+  try {
+    const chatId = req.params.chatId; // Get chat ID from request params
+
+    const group = await groups
+      .findOne({ chat: chatId }) // Find group where chat ID matches
+      .populate("admin", "firstName lastName profilePic") // Populate admin info
+      .populate("members", "firstName lastName profilePic") // Populate members info
+      .populate("chat"); // Populate chat info
+
+    if (!group) {
+      return res.status(404).json({ message: "Group not found" });
+    }
+
+    return res.json(group);
+  } catch (err) {
+    return res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
