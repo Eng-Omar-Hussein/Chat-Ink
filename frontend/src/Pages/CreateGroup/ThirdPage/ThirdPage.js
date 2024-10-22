@@ -41,13 +41,7 @@ export default function ThirdPage({ participant }) {
       visibility: groupType == "public",
     };
     dispatch(createGroup(data));
-    // // Check if group name is provided
-    // if (!groupName.trim()) {
-    //   alert("Please enter a group name.");
-    //   return;
-    // }
-
-    // createGroup();
+    navigate("/MainPage");
   };
 
   // const createGroup = () => {
