@@ -16,6 +16,7 @@ const CardComponent = (props) => {
     if (groupjoin.type === "groups/joinToGroup/fulfilled") {
       navigate(`/MainPage`);
     }
+    // navigate(`/MainPage`);
   };
   return (
     <div className="mb-4" style={{ marginTop: "10px" }}>
