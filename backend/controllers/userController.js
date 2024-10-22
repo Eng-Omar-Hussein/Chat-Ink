@@ -9,7 +9,7 @@ exports.login = async (req, res) => {
     const { email, password } = req.body;
     const userExists = await User.findOne({ email }).populate(
       "friends.friendsID",
-      "firstName lastName profilePic"
+      "firstName lastName profilePic _id"
     );
     if (userExists) {
       if (await bcrypt.compare(password, userExists.password)) {
@@ -18,6 +18,7 @@ exports.login = async (req, res) => {
         });
         const data = {
           name: userExists.firstName + " " + userExists.lastName,
+          id: userExists._id,
           profilePic: userExists.profilePic,
           friends: userExists.friends.map((friend) => ({
             _id: friend.friendsID._id,
