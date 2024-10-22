@@ -6,41 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchChats, fetchLoggedInUser } from "../../redux/chatSlice";
 
 function ChatList({ onChatClick }) {
-  // const chats = [
-  //   {
-  //     id: 1,
-  //     name: "Alex Linderson",
-  //     lastMessage: "Hey! How are you?",
-  //     time: "2:30 PM",
-  //     messageCount: 2,
-  //     img: chat1,
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "John Abraham",
-  //     lastMessage: "Let’s catch up soon!",
-  //     time: "2:10 PM",
-  //     messageCount: 1,
-  //     img: chat1,
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "DEPI Project",
-  //     lastMessage: "Don’t miss to attend the meeting.",
-  //     time: "12:15 PM",
-  //     messageCount: 10,
-  //     img: group,
-  //   },
-  //   {
-  //     id: 4,
-  //     name: "Sabila Sayma",
-  //     lastMessage: "How are you today?",
-  //     time: "12:10 PM",
-  //     messageCount: 2,
-  //     img: chat2,
-  //   },
-  // ];
-
+ 
   const conversations = useSelector((state) => state.chat.chats);
   const loading = useSelector((state) => state.chat.chatStatus === "loading");
   const error = useSelector((state) => state.chat.error);
@@ -58,9 +24,13 @@ function ChatList({ onChatClick }) {
   const groups = conversations.filter((con) => con.participants.length !== 2);
   const chat121 = conversations.filter((con) => con.participants.length === 2);
 
-  // const filteredChats = conversations.filter((chat) =>
-  //   chat.name.toLowerCase().includes(searchTerm.toLowerCase())
-  // );
+
+    // Filter chats based on the search term 
+    const filteredChats = chat121.filter((chat) => {
+      const participant = chat.participants.find((p) => p._id !== loggedInUserId);
+      const fullName = `${participant.firstName} ${participant.lastName}`.toLowerCase();
+      return fullName.includes(searchTerm.toLowerCase());
+    });
 
   return (
     <div>
@@ -73,7 +43,7 @@ function ChatList({ onChatClick }) {
         <div className="chats-container">
           {loading && <p>Loading...</p>}
           {error && <p>Error: {error}</p>}
-          {chat121.map((chat, i) => (
+          {filteredChats.map((chat, i) => (
             <div
               className="chat-item"
               key={i}
@@ -120,25 +90,6 @@ function ChatList({ onChatClick }) {
           ))}
         </div>
       </div>
-      {/* <div className="chats-container">
-        {filteredChats.map((chat) => (
-          <div
-            className="chat-item"
-            key={chat.id}
-            onClick={() => onChatClick(chat)}
-          >
-            <img src={chat.img} alt="Profile Picture" className="profile-pic" />
-            <div className="chat-details">
-              <h3 className="contact-name">{chat.name}</h3>
-              <p className="last-message">{chat.lastMessage}</p>
-            </div>
-            <div className="message-info">
-              <span className="message-count">{chat.messageCount}</span>
-              <span className="message-time">{chat.time}</span>
-            </div>
-          </div>
-        ))}
-      </div> */}
     </div>
   );
 }
