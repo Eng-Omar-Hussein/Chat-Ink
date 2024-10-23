@@ -7,9 +7,8 @@ export const fetchChats = createAsyncThunk("chat/fetchChats", async () => {
   if (!token) {
     throw new Error("No authentication token found"); // Handle case where token is missing
   }
-
-  // Simulate a delay for testing loading state
-  await new Promise((resolve) => setTimeout(resolve, 500));
+  
+  // await new Promise((resolve) => setTimeout(resolve, 500));
 
   const response = await axios.get("http://localhost:5000/api/chats/user", {
     headers: {

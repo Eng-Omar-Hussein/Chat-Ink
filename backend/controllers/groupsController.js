@@ -214,7 +214,18 @@ exports.getGroupByChatId = async (req, res) => {
       .findOne({ chat: chatId }) // Find group where chat ID matches
       .populate("admin", "firstName lastName profilePic") // Populate admin info
       .populate("members", "firstName lastName profilePic") // Populate members info
-      .populate("chat"); // Populate chat info
+      .populate({
+        path: "chat", // Populate chat info
+        populate: {
+          path: "messages", // Populate messages within the chat
+          select: "content sender time", // Fields to retrieve in messages
+          populate: {
+            path: "sender", // Populate sender of the messages
+            select: "firstName lastName profilePic", // Fields to retrieve for sender
+          },
+        },
+        select: "participants messages _id", // Fields to retrieve for chat
+      });
 
     if (!group) {
       return res.status(404).json({ message: "Group not found" });

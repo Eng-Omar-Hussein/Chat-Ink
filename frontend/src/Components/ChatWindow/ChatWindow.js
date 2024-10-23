@@ -216,10 +216,11 @@ function ChatWindow({ name, profilePicture, onBackClick, roomName, chats }) {
       {}
       <div id="chat-box" className="border p-2 overflow-auto " style={{ borderRadius: '30px', height: '70vh', backgroundColor: '#f1f1f15d' }}>
         {/* Display messages */}
+        {console.log(messages)}
         {messages.map((msg, index) => (
-          <div key={index} className={`message ${msg.sender === loggedInUserID ? 'sent' : 'received'} mb-2`}>
+          <div key={index} className={`message ${msg.sender._id === loggedInUserID ? 'sent' : 'received'} mb-2`}>
             <p>
-              {msg.sender === loggedInUserID ? <strong>You:</strong> : <strong>{name}:</strong>} {msg.content}
+              {msg.sender._id === loggedInUserID ? <strong>You:</strong> : <strong>{msg.sender.firstName +" "+msg.sender.lastName}:</strong>} {msg.content}
             </p>
             <span className="message-time">{msg.time}</span> {/* Display timestamp */}
           </div>

@@ -47,8 +47,15 @@ exports.getUserChats = async (req, res) => {
       participants: user,
     }).populate([
       { path: "participants", select: "firstName lastName profilePic" },
-      "messages",
+      {
+        path: "messages", 
+        populate: {
+          path: "sender",
+          select: "firstName lastName profilePic",
+        },
+      },
     ]);
+
     res.status(200).json(chats);
   } catch (err) {
     res
@@ -56,6 +63,7 @@ exports.getUserChats = async (req, res) => {
       .json({ error: "Failed to fetch user chats", message: err.message });
   }
 };
+
 
 exports.addMessageToChat = async (req, res) => {
   const { chatId } = req.params;
