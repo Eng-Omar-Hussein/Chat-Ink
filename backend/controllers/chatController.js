@@ -51,7 +51,7 @@ exports.getUserChats = async (req, res) => {
         path: "messages", 
         populate: {
           path: "sender",
-          select: "firstName lastName profilePic",
+          select: "firstName lastName profilePic ",
         },
       },
     ]);

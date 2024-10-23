@@ -72,7 +72,7 @@ function ChatWindow({ name, profilePicture, onBackClick, roomName, chats }) {
       const messagePayload = {
         _id: currentRoom,
         content: message.message,
-        sender: loggedInUserID,
+        sender: loggedInUser,
         time: getCurrentTime(),
         readBy: [loggedInUserID],
       };
