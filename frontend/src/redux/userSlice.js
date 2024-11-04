@@ -91,7 +91,7 @@ export const getUserInfo = createAsyncThunk(
   "user/getUserInfo",
   async (X, { rejectWithValue }) => {
     try {
-      const response = await fetch("http://localhost:5000/api/user", {
+      const response = await fetch("http://localhost:5000/api/user/userInfo", {
         method: "get",
         headers: {
           Authorization: localStorage.getItem("authToken"),
@@ -200,9 +200,9 @@ export const userSlice = createSlice({
         state.data = action.payload.data;
         console.log("----------------------------------------");
         console.log("from updated");
-        console.log("1- ", action.payload);
+        // console.log("1- ", action.payload);
         console.log("2- ", action.payload.data);
-        console.log("3- ", action.payload.data.data);
+        // console.log("3- ", action.payload.data.data);
 
         localStorage.setItem("data", JSON.stringify(action.payload.data));
         state.error = false;

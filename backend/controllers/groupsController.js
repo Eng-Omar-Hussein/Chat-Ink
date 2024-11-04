@@ -209,6 +209,13 @@ exports.removeUserFromGroup = async (req, res) => {
       },
       { new: true } // Return the updated document
     );
+    const chat = await Chat.findByIdAndUpdate(
+      group.chat,
+      {
+        $pull: { participants: userId },
+      },
+      { new: true }
+    );
 
     if (!group) {
       return res.status(404).json({ error: "Group not found" });
