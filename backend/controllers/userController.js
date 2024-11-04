@@ -175,16 +175,24 @@ exports.removeFriend = async (req, res) => {
 exports.userInfo = async (req, res) => {
   try {
     const { user } = req.body;
-    userData = await User.findById(user)
-      .select("-email -password")
-      .populate(
-        "friends.friendsID",
-        "firstName lastName profilePic status lastSeen"
-      );
+    userData = await User.findById(user).populate(
+      "friends.friendsID",
+      "firstName lastName profilePic _id"
+    );
     if (!userData) {
       return res.status(404).json({ message: "User not found" });
     }
-    return res.status(200).json(userData);
+    const data = {
+      name: userData.firstName + " " + userData.lastName,
+      id: userData._id,
+      profilePic: userData.profilePic,
+      friends: userData.friends.map((friend) => ({
+        _id: friend.friendsID._id,
+        name: friend.friendsID.firstName + " " + friend.friendsID.lastName,
+        profilePic: friend.friendsID.profilePic,
+      })),
+    };
+    return res.status(200).json(data);
   } catch (error) {
     return res.status(400).json({
       message: "Bad request , couldn't save the update",

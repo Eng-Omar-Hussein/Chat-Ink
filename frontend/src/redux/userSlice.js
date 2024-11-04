@@ -2,10 +2,10 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   error: false,
-  data: null,
+  data: JSON.parse(localStorage.getItem("data")) || null,
   loading: false,
   message: "",
-  auth: false,
+  auth: localStorage.getItem("authToken") || false,
 };
 export const registerUser = createAsyncThunk(
   "user/register",
@@ -87,6 +87,28 @@ export const updateUser = createAsyncThunk(
     }
   }
 );
+export const getUserInfo = createAsyncThunk(
+  "user/getUserInfo",
+  async (X, { rejectWithValue }) => {
+    try {
+      const response = await fetch("http://localhost:5000/api/user", {
+        method: "get",
+        headers: {
+          Authorization: localStorage.getItem("authToken"),
+        },
+      });
+
+      const data = await response.json();
+      if (response.status !== 201 && response.status !== 200 && !response.ok) {
+        return rejectWithValue(data);
+      } else {
+        return { data };
+      }
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
 
 export const userSlice = createSlice({
   name: "user",
@@ -105,7 +127,7 @@ export const userSlice = createSlice({
       state.auth = false;
       state.loading = false;
       state.message = "";
-      localStorage.removeItem("authToken");
+      localStorage.clear();
     },
   },
   extraReducers: (builder) => {
@@ -122,6 +144,7 @@ export const userSlice = createSlice({
         state.data = action.payload.data.data;
         state.auth = true;
         localStorage.setItem("authToken", action.payload.data.token);
+        localStorage.setItem("data", JSON.stringify(action.payload.data.data));
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
@@ -162,8 +185,38 @@ export const userSlice = createSlice({
         state.loading = false;
         state.message = action.payload.data.message;
         state.data = action.payload.data.data;
+        localStorage.setItem("data", JSON.stringify(action.payload.data.data));
       })
       .addCase(updateUser.rejected, (state, action) => {});
+
+    builder
+      .addCase(getUserInfo.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getUserInfo.fulfilled, (state, action) => {
+        state.loading = false;
+        state.message = action.payload.message;
+        state.data = action.payload.data;
+        console.log("----------------------------------------");
+        console.log("from updated");
+        console.log("1- ", action.payload);
+        console.log("2- ", action.payload.data);
+        console.log("3- ", action.payload.data.data);
+
+        localStorage.setItem("data", JSON.stringify(action.payload.data));
+        state.error = false;
+        state.error = false;
+      })
+      .addCase(getUserInfo.rejected, (state, action) => {
+        state.loading = false;
+        state.error = true;
+        state.token = null;
+        state.user = null;
+        state.message = action.payload.message;
+        console.log(action.payload);
+        console.log(state.message);
+      });
   },
 });
 

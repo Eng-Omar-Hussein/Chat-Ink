@@ -8,14 +8,14 @@ function MainPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getFriendsRequest()); // Dispatch the action on mount
-  }, []); // Empty dependency array ensures it runs only once
-  
-  const handleChatClick = (chat,check) => {
+    dispatch(getFriendsRequest());
+  }, []);
+
+  const handleChatClick = (chat, check) => {
     // Navigate to the ChatPage and pass the chat data
-    console.log(chat)
-    console.log(check)
-    navigate("/ChatPage", { state: { selectedChat: chat , check } });
+    console.log(chat);
+    console.log(check);
+    navigate("/ChatPage", { state: { selectedChat: chat, check } });
   };
 
   return (

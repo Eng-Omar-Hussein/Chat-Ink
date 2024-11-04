@@ -1,15 +1,46 @@
 const groups = require("../models/groupsModel");
 const Chat = require("../models/chat");
 
+// exports.getPublicGroups = async (req, res) => {
+//   try {
+//     const group = await groups
+//       .find({ visibility: true })
+//       .populate("admin", "firstName lastName profilePic")
+//       .populate("members", "firstName lastName profilePic")
+//       .populate("chat");
+//     if (!group) return res.status(404).json({ message: "Groups not found" });
+//     return res.json(group);
+//   } catch (err) {
+//     return res.status(500).json({ message: err.message });
+//   }
+// };
+
 exports.getPublicGroups = async (req, res) => {
   try {
-    const group = await groups
+    const { user } = req.body;
+    const allGroups = await groups
       .find({ visibility: true })
       .populate("admin", "firstName lastName profilePic")
       .populate("members", "firstName lastName profilePic")
       .populate("chat");
-    if (!group) return res.status(404).json({ message: "Groups not found" });
-    return res.json(group);
+
+    let returnedGroups = [];
+    let exist = false;
+    allGroups.forEach((group) => {
+      group.members.forEach((member) => {
+        if (member._id.toString() === user.toString()) {
+          exist = true;
+        }
+      });
+      if (!exist) {
+        returnedGroups.push(group);
+      }
+      exist = false;
+    });
+
+    if (!allGroups)
+      return res.status(404).json({ message: "Groups not found" });
+    return res.json(returnedGroups);
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
@@ -126,6 +157,13 @@ exports.addUserToGroup = async (req, res) => {
       },
       { new: true }
     );
+    const chat = await Chat.findByIdAndUpdate(
+      group.chat,
+      {
+        $push: { participants: userId },
+      },
+      { new: true }
+    );
 
     if (!group) {
       return res.status(404).json({ error: "Group not found" });
@@ -141,7 +179,9 @@ exports.addUserToGroup = async (req, res) => {
       group,
     });
   } catch (error) {
-    return res.status(500).json({ error: "An error occurred" });
+    return res
+      .status(500)
+      .json({ error: "An error occurred", message: error.message });
   }
 };
 
@@ -233,6 +273,8 @@ exports.getGroupByChatId = async (req, res) => {
 
     return res.json(group);
   } catch (err) {
-    return res.status(500).json({ message: "Server error", error: err.message });
+    return res
+      .status(500)
+      .json({ message: "Server error", error: err.message });
   }
 };

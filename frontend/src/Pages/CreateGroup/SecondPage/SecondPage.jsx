@@ -141,6 +141,7 @@ export default function App({ setCurrentPage, setParticipant, participant }) {
       </div>
       {user.friends?.length > 1 ? (
         friends.map((user) => {
+          console.log(user);
           return (
             <AddUser
               key={user._id}

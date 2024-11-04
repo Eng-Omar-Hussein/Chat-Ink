@@ -8,6 +8,7 @@ import {
   deleteNotification,
   getFriendsRequest,
 } from "../../redux/friendsSlice";
+import { getUserInfo } from "../../redux/userSlice";
 const NotificationManager = ({
   name,
   picture,
@@ -30,8 +31,10 @@ const NotificationManager = ({
       deleted = await dispatch(deleteNotification(notificationId));
     }
     if (deleted) {
+      const updateUser = await dispatch(getUserInfo());
       const notif = await dispatch(getFriendsRequest());
-      if (notif) {
+
+      if (notif && updateUser) {
         navigate(`/MainPage`);
       }
     }

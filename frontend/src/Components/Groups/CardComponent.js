@@ -1,6 +1,8 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { joinToGroup } from "../../redux/groupSlice";
+import { getPublicGroup } from "../../redux/groupSlice";
+
 import { useNavigate } from "react-router-dom";
 
 const CardComponent = (props) => {
@@ -14,9 +16,11 @@ const CardComponent = (props) => {
     console.log("groupID is ", id);
     const groupjoin = await dispatch(joinToGroup({ ID: id, userID: userid }));
     if (groupjoin.type === "groups/joinToGroup/fulfilled") {
-      navigate(`/MainPage`);
+      const groups = await dispatch(getPublicGroup());
+      if (groups) {
+        navigate(`/MainPage`);
+      }
     }
-    // navigate(`/MainPage`);
   };
   return (
     <div className="mb-4" style={{ marginTop: "10px" }}>
