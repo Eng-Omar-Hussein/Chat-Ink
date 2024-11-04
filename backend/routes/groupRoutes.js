@@ -14,11 +14,11 @@ const {
   getGroupByChatId,
 } = require("../controllers/groupsController");
 
-router.get("/:chatId", getGroupByChatId);
 router.get("/publicGroups", getPublicGroups);
 router.get("/privateGroups", getPrivateGroups);
-router.get("/:id", getGroupsById);
 router.get("/users/:id", getAllUsersInGroup);
+router.get("/:chatId", getGroupByChatId);
+router.get("/:id", getGroupsById);
 router.post("/", createGroup);
 router.put("/:id", updateGroup);
 router.put("/addUser/:id", addUserToGroup);
